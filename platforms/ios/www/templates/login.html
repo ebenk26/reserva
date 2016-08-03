@@ -1,0 +1,51 @@
+<ion-modal-view class="login">
+<ion-header-bar class="login">
+<div class="row">
+  <div class="col" style="text-align: center;">
+    <img src="img/reservalogo.png" width="90%" height="40">
+  </div>
+</div>
+</ion-header-bar>
+<ion-content class="logininput">
+<form ng-submit="doLogin()">
+  <div class="list">
+    <div class="row responsive-sm">
+      <div class="col">
+        <div class="item item-input">
+          <i><img src="img/usernameicon.png" width="20" height="30"></i>
+          <input type="text" name="LoginForm[username]" ng-model="LoginForm['LoginForm[username]']" placeholder="Username">
+        </div>
+      </div>
+      <div class="col">
+        <div class="item item-input">
+          <i><img src="img/passwordicon.png" width="20" height="30"></i>
+          <input type="password" name="LoginForm[password]" ng-model="LoginForm['LoginForm[password]']" placeholder="Password">
+        </div>
+      </div>
+    </div>        
+    <div class="row">
+      <div class="col col-33 col-offset-33"> <button type="submit" class="button button-assertive">Sign In</button></div>
+    </div>
+  </div>
+</form>
+<div class="row">
+  <div class="col" style="text-align: center;">
+    <button ng-click="fbLogin()" class="button icon-left ion-social-facebook button-positive button-full">Sign in With Facebook</button>
+  </div>  
+   
+</div> 
+<div class="row">
+  <div class="col">
+    <div class="col" style="text-align: center;">
+    <button ng-click="googleLogin()" class="button icon-left ion-social-googleplus button-assertive button-full">Sign in With Google</button>
+  </div> 
+  </div>
+</div>
+</ion-content>
+<div class="bar bar-footer">
+  <div class="button-bar">
+    <a class="button">Forgot Password?</a>
+    <a class="button" ng-click="registerPage()">New Here/SignUp</a>
+  </div>
+</div>
+</ion-modal-view>

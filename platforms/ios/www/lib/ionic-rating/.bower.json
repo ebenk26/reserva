@@ -1,0 +1,15 @@
+{
+  "name": "ionic-rating",
+  "homepage": "https://github.com/fraserxu/ionic-rating",
+  "version": "0.3.0",
+  "_release": "0.3.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.3.0",
+    "commit": "04e917bfebf4de0688fb0b1fab029446f272ba75"
+  },
+  "_source": "https://github.com/fraserxu/ionic-rating.git",
+  "_target": "^0.3.0",
+  "_originalSource": "ionic-rating",
+  "_direct": true
+}

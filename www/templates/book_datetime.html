@@ -1,0 +1,68 @@
+<ion-view view-title="">
+	<ion-content class="has-header">
+		<div class="row salon-detail" >
+		    <div class="bg-blur" style="background-image:url({{salonData.imgUrl}})"></div>
+		    <div class="col col-33 col-offset-33">
+		      <div class="item-avatar">
+		        <img ng-src="{{salonData.imgUrl}}">
+		      </div>
+		      <rating ng-model="rating.rate" max="rating.max"></rating>
+		      <h4>{{salonData.name}}</h4>
+		      <p>{{salonData.address}}</p>
+		    </div>
+	  </div>
+	  <div class="my-bar-title bar bar-header bar-assertive">
+	    <h1 class="title"><i class="icon ion-ios-list"></i>&nbsp;&nbsp;&nbsp;Confirm</h1>
+	  </div>
+		<ion-list>
+			<div class="item bar-content-title">Services Selected</div>
+			<div ng-repeat="listname in servName" class="item item-icon-left item-detail-serv"><div><i class="icon ion-android-done"></i>{{ listname.service_name }}&nbsp;&nbsp;&nbsp;{{listname.service_price | currency:"RP ":0}}</div></div><br>
+			<div class="item item-detail-serv">Summary Hours : {{hours}}</div>
+		</ion-list>
+		<form name="bookForm" ng-submit="checkout()">
+		<div class="item item-icon-left border-none">
+            <i class="icon ion-calendar"></i>
+            Choose Date and Time :&nbsp;
+            <input ion-datetime-picker date only-valid="{'after': 'today', 'inclusive': true}" ng-model="book.dateValue" value="{{book.dateValue | date: 'dd-MM-yyyy'}}" style="width: 100px;">
+        </div>
+		<div class="button-bar padding row" style="overflow: auto">
+			<ion-radio ng-repeat="time in timeList"
+			       ng-value="time.value"
+			       ng-model="data.grossOptions"
+			       ng-change="updateTimeList(time)"
+			       class="button button-positive button-outline button-radio-time"
+			       name="radio1">
+				{{ time.text }}
+			</ion-radio>
+		</div>
+		<div class="button-bar padding row" style="overflow: auto">
+			<ion-radio ng-repeat="time in timeList2"
+			       ng-value="time.value"
+			       ng-model="data.grossOptions"
+			       ng-change="updateTimeList(time)"
+			       class="button button-positive button-outline button-radio-time"
+			       name="radio1">
+				{{ time.text }}
+			</ion-radio>
+		</div>
+		<ion-list style="line-height: 31px;">
+			<div class="item bar-content-title"><div style="float: left">Promotion Code</div><input type="text" style="float: right;text-align: center;" ng-model="book.promoCode"></div>
+		</ion-list>
+		<ion-list>
+			<div class="item" >
+				<div class="item item-icon-left" style="background-color: #f0243c;color: white">
+					<i class="icon ion-information-circled"></i>
+					Additional Request
+				</div>
+				<label class="item item-input">
+					<textarea ng-model="book.note" placeholder="Write your additional request..."></textarea>
+				</label>
+			</div>
+		</ion-list>
+	    <button type="submit" class="btn-blue-navi button button-full">
+	        Confirm
+	    </button>
+	    </form>
+	</ion-content>
+</ion-view>
+

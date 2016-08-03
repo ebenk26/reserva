@@ -1,0 +1,74 @@
+<ion-view title="My Booking">
+    <ion-content class="no-header">
+<ion-tabs class="tabs-top tabs-no-icon tabs-mybooking">
+
+	<ion-tab title="My Booking" on-select="vm.nearmeTab()">
+	<div class="list salon-list top93">
+		<div ng-repeat="item in bookservice">
+			<a class="item padding0" ng-click="showDetails = ! showDetails">
+			  
+			  <div class="row item-avatar item-thumbnail-left ava-mybook">
+			  	<img src="{{ item.src }}">
+			    <div class="col col-75 padding-mybook">
+
+			      <h2 style="color: #ff3333">{{ item.title }}</h2>
+			      <p>{{ item.title2 }}</p>
+			    </div>
+			    <div class="col col-25 item-icon-right">
+			      <i ng-class="{'icon ion-chevron-down': showDetails, 'icon ion-chevron-right': !showDetails}"></i>
+			    </div>
+			  </div>
+			</a>
+			<div ng-show="showDetails" class="row" style="background-color: whitesmoke;">
+				<div class="col col-75">
+			  		<div class="row" style="color: red"><i class="icon ion-android-done"></i>&nbsp;&nbsp;&nbsp;{{item.status}}</div>
+					<span class="" ng-repeat="service in item.services">
+						 {{$first ? '' : $last ? ' and ' : ', '}}{{service.srvItems.name}}
+					</span>
+					<span class="" style>
+						<div>{{item.time | date:'hh:mm dd-MM-yyyy'}}</div>
+					</span>
+				</div>
+				<div class="col">
+		  			<div>
+			  			<button class="button button-small button-assertive row" style="margin-bottom: 3px;">
+						  Cancel
+						</button>
+					</div>
+					<div>
+			  			<button class="button button-small button-assertive row">
+						  Reschedule
+						</button>
+					</div>
+				</div>
+		  	</div>
+		</div>
+	</div>
+	</ion-tab>
+
+	<ion-tab title="Past Appointment" on-select="vm.ratingTab()">
+	 <div class="list salon-list top93">
+		<div ng-repeat="item in listSalon2">
+			<a class="item padding0">
+			  
+			  <div class="row">
+			    <div class="col col-33">
+
+			      <h2 style="color: #ff3333;white-space: normal;">{{ item.title }}</h2>
+			      <p><div style="font-size: 11px;">{{item.time}}&nbsp;{{item.date | date:'dd-MM-yyyy'}}</div></p>
+			    </div>
+			    <div class="col" style="align-self: center;"><rating ng-model="item.rating" max="5" readonly="readOnly"></rating></div>
+			    <div class="col item-icon-right" style="align-self: center;color: red;text-align: center;">
+			      {{item.bookStatus}}
+			    </div>
+			  </div>
+			</a>
+		</div>
+	</div>
+	</ion-tab>
+
+	</ion-tabs>	
+
+    </ion-content>
+	
+</ion-view>

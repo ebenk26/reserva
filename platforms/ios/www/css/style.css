@@ -1,0 +1,406 @@
+/* Empty. Add your own CSS if you like */
+
+.login{
+	background: red;
+}
+.bar.bar-stable .title{
+    color: white;
+}
+
+.logininput{
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-top: 50px;
+}
+
+.banner-reserva{
+	text-align: center;
+}
+
+.button-sign{
+	text-align: center;
+}
+
+.bar.bar-stable{
+	background-color: red;
+	color: white;
+}
+
+.bar-stable .button.button-clear {
+  color : white;
+}
+
+.item-avatar > img:first-child {
+	max-width: 100px;
+	max-height: 100px;
+	position: relative;
+	top: auto;
+	left: 0px;
+}
+.salon-list .item{
+	color: #999999;
+}
+.salon-list .item .row h2{
+	color: #333333;
+}
+.salon-detail{
+	position: relative;
+}
+.salon-detail .item-avatar{
+	padding-left: 0px;
+}
+
+.salon-detail ul.rating li i {
+  font-size: 20px;
+  color: red;
+}
+
+.salon-detail ul.rating li {
+  display: inline;
+  border: 0px;
+  background: none;
+  padding: 3px 1px;
+}
+.salon-detail h4{
+	color: #f0243c;
+	font-weight: bold;
+}
+.salon-detail .bg-blur {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  
+  display: block;
+  /*background-image: url('http://666a658c624a3c03a6b2-25cda059d975d2f318c03e90bcf17c40.r92.cf1.rackcdn.com/unsplash_527bf56961712_1.JPG');*/
+  /*width: 1200px;*/
+  /*height: 800px;*/
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  
+  -webkit-filter: blur(2px);
+  -moz-filter: blur(2px);
+  -o-filter: blur(2px);
+  -ms-filter: blur(2px);
+  filter: blur(2px);
+}
+
+.menu-salon{
+	background-color: #f0243c;
+}
+.menu-salon a{
+	background-color: #f0243c;
+	color: white
+}
+.list.menu-list-salon .item a{
+	text-align: left;
+}
+.list.menu-list-salon .item{
+	background-color: #f5f5f5;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	
+}
+
+.menu-bottom-salon{
+	background-color: #2b2d42;
+}
+.menu-bottom-salon a{
+	background-color: #2b2d42;
+	color: white
+}
+.my-bar-title{
+	position: relative;
+	text-align: left;
+	background-color: #f0243c!important;
+}
+.my-bar-title h1{
+	text-align: left!important;
+}
+.content-service{
+	position: relative;
+	width: 100%;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+.btn-blue-navi{
+	background-color: #2b2d42;
+	color: #fff;
+}
+span.service-price{
+	float: right;
+	margin-left: 10px;
+}
+
+/*ACCORDION*/
+/* Style the buttons that are used to open and close the accordion panel */
+button.accordion {
+    background-color: #909cb0;
+    color: #fdf8f8;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+button.accordion.active, button.accordion:hover {
+    background-color: #909cb0;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+div.panel {
+    padding: 0 18px;
+    background-color: white;
+    display: none;
+}
+
+/* The "show" class is added to the accordion panel when the user clicks on one of the buttons. This will show the panel content */
+div.panel.show {
+    display: block !important;
+}
+
+div.panel {
+    padding: 0 3px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: 0.6s ease-in-out;
+    opacity: 0;
+}
+
+div.panel.show {
+    opacity: 1;
+    max-height: 500px; /* Whatever you like, as long as its more than the height of the content (on all screen sizes) */
+}
+
+
+button.accordion i {
+    /*content: '\02795';*/
+    font-size: 13px;
+    color: #fdf8f8;
+    float: right;
+    margin-left: 5px;
+}
+
+button.accordion.active i {
+    /*content: "\2796";*/
+    color: #fdf8f8;
+}
+button.accordion i.ion-chevron-right{
+	display: block;
+}
+button.accordion i.ion-chevron-down{
+	display: none;
+}
+button.accordion.active i.ion-chevron-right{
+	display: none;
+}
+button.accordion.active i.ion-chevron-down{
+	display: block;
+}
+
+button.accordion-lvl-2,button.accordion-lvl-2.active, button.accordion-lvl-2:hover{
+	background-color: #B2BBCA;
+}
+/*END ACCORDION*/
+
+.top0{
+  top: 0 !important;
+}
+.top47{
+  margin-top: 47px;
+}
+.top93{
+  margin-top: 93px;
+}
+.tabs-no-icon .tab-item .icon{
+  display: none;
+}
+.tabs-no-icon .tab-item-active {
+  background-color: #e0e0e0;
+}
+
+.tabs-top.tabs-striped:not(.tabs-icon-left):not(.tabs-icon-top) .tab-item.tab-item-active i {
+  display: none;
+}
+
+.popupalert .popup-body {
+    overflow: inherit !important;
+    text-align: center;
+    position: relative;
+}
+
+.center {
+  text-align: center;
+}
+
+.whitespace-normal{
+  white-space: normal;
+  padding: 0px;
+}
+
+.title-promotion{
+  font-size: 12px;
+}
+
+.content-promotion{
+  font-size: 10px;
+}
+
+.font-grey{
+  color: grey; 
+}
+
+.avatar-review {
+    padding-left: 0px;
+}
+
+.font-19{
+  font-size: 30px;
+  text-align: center;
+}
+
+.no-border {
+  border-width: 0;
+}
+
+.ion-nifty-modal {
+  width: 90%;
+  min-height: 0 !important;
+  height: 250px !important;
+  top: 10%;
+  left: 5%;
+  right: 5%;
+  bottom: 5%;
+  background-color: transparent;
+  border-radius: 10px;
+  -webkit-box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5); }
+
+.ion-nifty-modal .ion-modal-content-custom {
+  width: 100%;
+  height: 100%;
+  background-color: #333;
+  border-radius: 10px; }
+
+/* Fix modal backdrop for smaller devices */
+@media (max-width: 679px) {
+  .active .modal-backdrop-bg {
+    opacity: .5; }
+  .modal-backdrop-bg {
+    -webkit-transition: opacity 300ms ease-in-out;
+    transition: opacity 300ms ease-in-out;
+    background-color: #000;
+    opacity: 0; } }
+
+.red-reserva {
+  background-color: #ef473a;
+}
+
+.item-detail-serv {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-width: 0px;
+  white-space: normal;
+}
+
+.item-radio .item-content {
+      padding: 0px;
+      background: none;
+}
+
+.button-bar .button {
+  min-height: 0;
+  line-height: 30px;
+}
+.button-bar > .item-radio.button {
+  padding: 0;
+}
+.item-radio input:checked ~ .item-content {
+/* style the item content when its checked */
+border-color: #145fd7;
+background-color: #4a87ee;
+color: white;
+}
+
+.item-radio .radio-icon {
+display: none;
+}
+
+.button.button-positive.button-outline.active, .button.button-positive.button-outline.activated {
+        background-color: #ef473a;
+        box-shadow: none;
+        color: #fff; 
+}
+
+.card .item:last-child, .list-inset .item:last-child {
+  margin-bottom: 0;
+}
+.item-radio input:checked + .radio-content .item-content {
+    background: #ef473a none repeat scroll 0 0;
+    color: white;
+}
+
+.border-none  {
+  border: none;
+}
+
+.button.button-positive.button-outline {
+    background: transparent none repeat scroll 0 0;
+    border-color: #ddd;
+    color: grey;
+}
+
+.bar-detail-serv {
+  float: left; 
+}
+
+.bar-item-serv {
+  float: right;
+  width: 200px; 
+  background-color: whitesmoke;
+  color: black; 
+  text-align: center;
+}
+
+.bar-content-title {
+  background-color: #909cb0;
+  color: white;
+}
+
+.tab-item {
+  max-width: none;
+}
+
+.tabs-mybooking .tab-item.tab-item-active {
+  background-color: #ff3333;
+  color: white;
+}
+
+.padding0 {
+  padding: 0;
+}
+
+.padding-mybook {
+  padding-top: 27px;
+  padding-left: 15px;
+}
+
+.ava-mybook > img:first-child {
+  max-width: 80px;
+  max-height: 80px;
+  position: relative;
+  top: auto;
+  left: 0px;
+}
+
+.tabs-mybooking > .tabs {
+    top: -49px;
+}

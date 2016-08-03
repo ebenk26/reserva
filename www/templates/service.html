@@ -1,0 +1,48 @@
+<ion-view view-title="">
+<ion-content class="has-header" overflow-scroll="true">
+  <div class="row salon-detail" >
+    <div class="bg-blur" style="background-image:url({{salonData.imgUrl}})"></div>
+    <div class="col col-33 col-offset-33">
+      <div class="item-avatar">
+        <img ng-src="{{salonData.imgUrl}}">
+      </div>
+      <rating ng-model="rating.rate" max="rating.max"></rating>
+      <h4>{{salonData.name}}</h4>
+      <p>{{salonData.address}}</p>
+    </div>
+  </div>
+  <div class="my-bar-title bar bar-header bar-assertive">
+    <h1 class="title"><i class="icon ion-scissors"></i>&nbsp;&nbsp;&nbsp;Services</h1>
+  </div>
+  <div class="content-service">
+    <form name="bookForm" ng-submit="bookService()" overflow-scroll="true" style="overflow-y: scroll;">
+    <ul>
+      <li ng-repeat="listservice in service" overflow-scroll="true">
+        <button type="button" ng-click="showDetails = ! showDetails" class="accordion">{{ listservice.category_name }} <i class="icon ion-chevron-down"></i><i class="icon ion-chevron-right"></i></button>
+        <ul ng-show="showDetails">
+          <li ng-repeat="listgroup in listservice.group_name" overflow-scroll="true">
+             <button type="button" class="accordion accordion-lvl-2" ng-click="showSubDetails = ! showSubDetails">{{ listservice.group_name[$index].group_name}} <i class="icon ion-chevron-down"></i><i class="icon ion-chevron-right"></i></button>
+             <ul ng-show="showSubDetails">
+               <ion-list ng-repeat="listprice in listservice.group_name[$index]" overflow-scroll="true">
+                 <ion-checkbox ng-true-value="{{ listprice.id }}" ng-false-value="" ng-model="book.BookingTransaction['service_id'][listprice.id]"><span style="float:left">{{ listprice.srvServices.name }}</span> <span class="service-price">{{listprice.price | currency:"RP ":0}}</span></ion-checkbox>
+                 <!-- <input
+                    type="checkbox"
+                    name="BookingTransaction[service_id][]"
+                    value="{{ listprice.srvServices.id }}"
+                    ng-model="listprice.selected"
+                  ><span style="float:left">{{ listprice.srvServices.name }}</span> <span class="service-price">{{listprice.price | currency:"RP ":0}}</span> -->
+               </ion-list>
+             </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <button type="submit" class="btn-blue-navi button button-full">
+        Confirm
+    </button>
+    </form>
+
+  </div>
+</ion-content>
+</ion-view>
+

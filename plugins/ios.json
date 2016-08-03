@@ -1,0 +1,42 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        },
+        "cordova-plugin-googleplus": {
+            "REVERSED_CLIENT_ID": "805011261342-55jpk1vg8kpn469aja5qevbm69o73jlg.apps.googleusercontent.com",
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        },
+        "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        },
+        "cordova-plugin-facebook4": {
+            "APP_ID": "1107147336013228",
+            "APP_NAME": "ReservaTesLogin",
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        }
+    },
+    "dependent_plugins": {}
+}

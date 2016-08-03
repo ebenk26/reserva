@@ -1,0 +1,93 @@
+<ion-pane ng-controller="HairCtrl as vm">
+<ion-view view-title="{{title}}">
+<ion-nav-buttons side="right">
+        <button side="right" class="button button-icon button-clear ion-search" 
+        ng-click="vm.showFilterBar()"></button>
+      </ion-nav-buttons>
+<ion-content class="has-header">
+
+</ion-content>
+<ion-tabs class="tabs-top tabs-no-icon">
+
+  <ion-tab title="Near Me" on-select="vm.nearmeTab()">
+    <div class="list salon-list top93">
+      <div collection-repeat="item in vm.items | orderBy:'range'" divider-collection-repeat>
+        <a class="item item-thumbnail-left" ng-click="vm.detailSalon(item.id)">
+          <img src="{{ item.src }}">
+          <div class="row">
+            <div class="col">
+             <rating ng-model="item.rating" max="rating.max" readonly="readOnly"></rating>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col col-75">
+
+              <h2>{{ item.title }}</h2>
+              <p>{{ item.title2 }}</p>
+            </div>
+            <div class="col col-25">
+              <i class="icon ion-ios-location"></i>
+              <span>{{ item.range }}</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </ion-tab>
+
+  <ion-tab title="Rating" on-select="vm.ratingTab()">
+     <div class="list salon-list top93">
+      <div collection-repeat="item2 in vm.items2 | orderBy:'rating':true" divider-collection-repeat>
+        <a class="item item-thumbnail-left" ng-click="vm.detailSalon(item2.id)">
+          <img src="{{ item2.src }}">
+          <div class="row">
+            <div class="col">
+             <rating ng-model="item2.rating" max="rating.max" readonly="readOnly"></rating>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col col-75">
+
+              <h2>{{ item2.title }}</h2>
+              <p>{{ item2.title2 }}</p>
+            </div>
+            <div class="col col-25">
+              <i class="icon ion-ios-location"></i>
+              <span>{{ item2.range }}</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </ion-tab>
+
+  <ion-tab title="Promotion" on-select="vm.promotionTab()">
+  <ion-nav-view name="promotion"></ion-nav-view>
+     <div class="list salon-list top93">
+      <div collection-repeat="item in vm.items" divider-collection-repeat>
+        <a class="item item-thumbnail-left" ng-click="vm.detailSalon(item.id)">
+          <img src="{{ item.src }}">
+          <div class="row">
+            <div class="col">
+             <rating ng-model="item.rating" max="rating.max" readonly="readOnly"></rating>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col col-75">
+
+              <h2>{{ item.title }}</h2>
+              <p>{{ item.title2 }}</p>
+            </div>
+            <div class="col col-25">
+              <i class="icon ion-ios-location"></i>
+              <span>{{ item.range }}</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </ion-tab>
+
+</ion-tabs>
+</ion-view>
+</ion-pane>

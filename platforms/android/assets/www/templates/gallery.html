@@ -1,0 +1,24 @@
+<ion-view view-title="">
+<ion-content class="has-header">
+  <div class="row salon-detail" >
+    <div class="bg-blur" style="background-image:url({{salonData.imgUrl}})"></div>
+    <div class="col col-33 col-offset-33">
+      <div class="item-avatar">
+        <img ng-src="{{salonData.imgUrl}}">
+      </div>
+      <rating ng-model="rating.rate" max="rating.max"></rating>
+      <h4>{{salonData.name}}</h4>
+      <p>{{salonData.address}}</p>
+    </div>
+  </div>
+  <div class="my-bar-title bar bar-header bar-assertive">
+    <h1 class="title"><i class="icon ion-images"></i>&nbsp;&nbsp;&nbsp;Gallery</h1>
+  </div>
+  <div class="row" >
+    <div collection-repeat="listimage in images" divider-collection-repeat>
+        <div class="col"><img src="{{ listimage.src }}"></div>
+    </div>
+  </div>
+</ion-content>
+</ion-view>
+

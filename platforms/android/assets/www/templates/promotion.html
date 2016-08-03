@@ -1,0 +1,58 @@
+<ion-view view-title="">
+<ion-content class="has-header">
+  <div class="row salon-detail" >
+    <div class="bg-blur" style="background-image:url({{salonData.imgUrl}})"></div>
+    <div class="col col-33 col-offset-33">
+      <div class="item-avatar">
+        <img ng-src="{{salonData.imgUrl}}">
+      </div>
+      <rating ng-model="rating.rate" max="rating.max" readonly="readOnly"></rating>
+      <h4>{{salonData.name}}</h4>
+      <p>{{salonData.address}}</p>
+    </div>
+  </div>
+  <div class="my-bar-title bar bar-header bar-assertive">
+    <h1 class="title"><i class="icon ion-pricetag"></i>&nbsp;&nbsp;&nbsp;Promotion</h1>
+  </div>
+  <!-- <div collection-repeat="listimage in images" divider-collection-repeat>
+      <img src="{{ listimage.src }}">
+  </div> -->
+    <div class="list card">
+      <div class="item whitespace-normal">
+        <div class="row">
+          <div class="col">
+            <div class="title-promotion">Hair Thickening Consultation & Stop & Growth Scalp Treatment</div>
+            <div class="title-promotion font-grey">2 Hours</div><br>
+            <div class="content-promotion">Much more than hair extension: Hairdreams hair creation. Please note that if you decide to do a hair creation after the consultation, this amount will be deducted from the total amount of the hair creation.</div>
+
+          </div>
+          <div class="col col-25">
+            <s class="content-promotion">IDR 350000</s>&nbsp;<br><b class="content-promotion">IDR 175000</b><br>
+            <button class="button button-small button-assertive">
+              BOOK
+            </button><br>
+            <div class="content-promotion">until June 14, 2016</div>
+          </div>
+        </div>
+      </div>
+      <div class="item whitespace-normal">
+        <div class="row">
+          <div class="col">
+            <div class="title-promotion">Hair Lengthening Image Consultation & Intensive Hair Treatment</div>
+            <div class="title-promotion font-grey">2 Hours</div><br>
+            <div class="content-promotion">Much more than hair extension: Hairdreams hair creation. Please note that if you decide to do a hair creation after the consultation, this amount will be deducted from the total amount of the hair creation.</div>
+
+          </div>
+          <div class="col col-25">
+            <div class="content-promotion"><s>IDR 350000</s>&nbsp;<br><b>IDR 175000</b></div><br>
+            <button class="button button-small button-assertive">
+              BOOK
+            </button><br>
+            <div class="content-promotion">until June 14, 2016</div>
+          </div>
+        </div>
+      </div>
+    </div>
+</ion-content>
+</ion-view>
+

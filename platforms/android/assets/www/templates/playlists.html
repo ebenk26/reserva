@@ -1,0 +1,45 @@
+<ion-pane ng-controller="ItemController as vm">  
+  <!-- <ion-header-bar class="bar-positive">
+    <h1 class="title">Group By Month & Year</h1>
+    <div class="buttons">
+        <button class="button button-icon ion-android-search" 
+                ng-click="vm.showFilterBar()"></button>
+    </div>      
+  </ion-header-bar> -->
+  <ion-content class="has-header">
+  <ion-header-bar class="bar-positive">
+    <h1 class="title">Group By Month & Year</h1>
+    <div class="buttons">
+        <button class="button button-icon ion-android-search" 
+                ng-click="vm.showFilterBar()"></button>
+    </div>      
+  </ion-header-bar>
+    <ion-list>
+      <div collection-repeat="item in vm.items" divider-collection-repeat>
+          <!-- <ion-item> -->
+            <!-- <div>{{ item.description }}</div>
+            <div>{{ item.date | date:'dd-MM-yyyy' }}</div> -->
+			<a class="item item-thumbnail-left" href="#/app/salon">
+				<img src="{{ item.src }}">
+				<div class="row">
+				<div class="col">
+				<rating ng-model="rating.rate" max="rating.max"></rating>
+				</div>
+				</div>
+				<div class="row">
+				<div class="col col-75">
+
+				<h2>{{ item.title }}</h2>
+				<p>{{ item.title2 }}</p>
+				</div>
+				<div class="col col-25">
+				<i class="icon ion-ios-location"></i>
+				<span>1 km</span>
+				</div>
+				</div>
+			</a>
+          <!-- </ion-item> -->
+      </div>
+    </ion-list>  
+  </ion-content>
+</ion-pane>  

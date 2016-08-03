@@ -1,0 +1,53 @@
+<style type="text/css" media="screen">
+	.button-bar > .button:last-child {
+  border-radius: 0px 20px 20px 0px !important;
+}
+.button-bar > .button:first-child {
+    border-radius: 20px 0px 0px 20px !important;
+}
+</style>
+
+<ion-view title="Sign Up">
+    <ion-content class="has-header" >
+
+        <form ng-submit="submitRegister()">
+			<div class="list">
+
+				<label class="item item-input">
+					<input type="text" name="SignupForm[full_name]" ng-model="SignupForm['SignupForm[full_name]']" placeholder="Full Name">
+				</label>
+
+				<label class="item item-input">
+					<input type="text" name="SignupForm[username]" ng-model="SignupForm['SignupForm[username]']" placeholder="Username">
+				</label>
+
+				<label class="item item-input">
+					<input type="text" name="SignupForm[email]" ng-model="SignupForm['SignupForm[email]']" placeholder="Email">
+				</label>
+
+				<label class="item item-input">
+					<input type="number" name="SignupForm[phone_number]" ng-model="SignupForm['SignupForm[phone_number]']" placeholder="Phone Number">
+				</label>
+
+				<label class="item item-input">
+					<input type="password" name="SignupForm[password]" ng-model="SignupForm['SignupForm[password]']" placeholder="Password">
+				</label>
+
+				<label class="item item-input">
+					<input type="password" name="SignupForm[password_repeat]" ng-model="SignupForm['SignupForm[password_repeat]']" placeholder="Password Repeat">
+				</label>
+
+				<!-- <div class="button-bar padding">
+					<a grouped-radio="1" value="1" name="SignupForm[gender]" ng-model="SignupForm['SignupForm[gender]']">Male</a>
+					<a grouped-radio="0" value="0" name="SignupForm[gender]" ng-model="SignupForm['SignupForm[gender]']">Female</a>
+				</div> -->
+			</div>
+
+			<div class="padding-horizontal">
+            	<button class="button button-balanced button-block" type="submit">Sign Up</button>
+            </div>
+
+        </form>
+
+    </ion-content>
+</ion-view>

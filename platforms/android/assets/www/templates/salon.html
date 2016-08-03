@@ -1,0 +1,50 @@
+<ion-view view-title="">
+<ion-content class="has-header">
+  <div class="row salon-detail" >
+    <div class="bg-blur" style="background-image:url({{salonData.imgUrl}})"></div>
+    <div class="col col-33 col-offset-33">
+      <div class="item-avatar">
+        <img ng-src="{{salonData.imgUrl}}">
+      </div>
+      <rating ng-model="salonData.rate" max="rating.max" readonly="readOnly"></rating>
+      <h4>{{salonData.name}}</h4>
+      <p>{{salonData.address}}</p>
+    </div>
+  </div>
+  <div class="button-bar menu-salon">
+    <a class="button">About Us</a>
+    <a class="button">Favourites</a>
+  </div>
+  <ul class="list menu-list-salon">
+      <li class="item">
+        <a href="" class="button button-clear button-full icon ion-chevron-right icon-right">
+          <i class="icon ion-android-calendar"></i>&nbsp;&nbsp;Book 24/7
+        </a>
+      </li>
+      <li class="item">
+        <a href="#/app/service" class="button button-clear button-full icon ion-chevron-right icon-right">
+          <i class="icon ion-scissors"></i>&nbsp;&nbsp;Services
+        </a>
+      </li>
+      <li class="item">
+        <a href="#/app/promotion" class="button button-clear button-full icon ion-chevron-right icon-right">
+          <i class="icon ion-pricetag"></i>&nbsp;&nbsp;Promotion
+        </a>
+      </li>
+      <li class="item">
+        <a href="#/app/gallery" class="button button-clear button-full icon ion-chevron-right icon-right">
+          <i class="icon ion-images"></i>&nbsp;&nbsp;Gallery
+        </a>
+      </li>
+      <li class="item">
+        <a href="#/app/review" class="button button-clear button-full icon ion-chevron-right icon-right">
+          <i class="icon ion-ios-list"></i>&nbsp;&nbsp;Reviews
+        </a>
+      </li>
+  </ul>
+  <div class="button-bar menu-bottom-salon">
+    <a class="button icon ion-email"></a>
+    <a class="button icon ion-android-calendar"></a>
+  </div>
+</ion-content>
+</ion-view>

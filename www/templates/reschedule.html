@@ -1,0 +1,35 @@
+<ion-modal-view class="ion-nifty-modal">
+  <div class="ion-modal-content-custom">
+    <ion-content class="padding">
+      <div class="item item-icon-left border-none" ion-datetime-picker date only-valid="{'after': 'today', 'inclusive': true}" ng-model="dateValue">
+        <i class="icon ion-calendar"></i>
+        Choose Date and Time :<br> 
+        <strong>{{dateValue | date: "dd-MM-yyyy"}}</strong>
+        
+      </div>
+      <div class="button-bar padding row" style="overflow: auto">
+      <ion-radio ng-repeat="time in timeList"
+             ng-value="time.value"
+             ng-model="data.grossOptions"
+             ng-change="updateTimeList(time)"
+             class="button button-positive button-outline button-radio-time"
+             name="radio1">
+        {{ time.text }}
+      </ion-radio>
+    </div>
+    <div class="button-bar padding row" style="overflow: auto">
+      <ion-radio ng-repeat="time in timeList2"
+             ng-value="time.value"
+             ng-model="data.grossOptions"
+             ng-change="updateTimeList(time)"
+             class="button button-positive button-outline button-radio-time"
+             name="radio1">
+        {{ time.text }}
+      </ion-radio>
+    </div>
+    </ion-content>
+    <ion-footer-bar align-title="center" class="bar-assertive" ng-click="closeReschedule()">
+  <h1 class="title">Submit</h1>
+</ion-footer-bar>
+  </div>
+</ion-modal-view>

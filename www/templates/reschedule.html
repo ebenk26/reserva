@@ -28,8 +28,12 @@
       </ion-radio>
     </div>
     </ion-content>
-    <ion-footer-bar align-title="center" class="bar-assertive" ng-click="closeReschedule()">
+    <!-- <ion-footer-bar align-title="center" class="bar-assertive" >
   <h1 class="title">Submit</h1>
-</ion-footer-bar>
+</ion-footer-bar> -->
+    <ion-footer-bar align-title="center" class="row" style="background-color: transparent;">
+      <div ng-click="SubmitReschedule()" class="col" style="background-color: #ef473a;border: 1px solid black;"><h3 style="line-height: inherit;color: white;text-align: center;">Submit</h3></div>
+      <div ng-click="CloseReschedule()" class="col" style="background-color: #ef473a;border: 1px solid black;"><h3 style="line-height: inherit;color: white;text-align: center;">Close</h3></div>
+    </ion-footer-bar>
   </div>
 </ion-modal-view>

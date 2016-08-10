@@ -20,10 +20,13 @@
 			<div class="item item-detail-serv">Summary Hours : {{hours}}</div>
 		</ion-list>
 		<form name="bookForm" ng-submit="checkout()">
-		<div class="item item-icon-left border-none">
-            <i class="icon ion-calendar"></i>
-            Choose Date and Time :&nbsp;
-            <input ion-datetime-picker date only-valid="{'after': 'today', 'inclusive': true}" ng-model="book.dateValue" value="{{book.dateValue | date: 'dd-MM-yyyy'}}" style="width: 100px;">
+		<div class="item item-icon-left border-none" ion-datetime-picker date only-valid="{'after': 'today', 'inclusive': true}" ng-model="book.dateValue">
+            <!-- <i class="icon ion-calendar"></i>
+            Choose Date and Time :&nbsp; -->
+            <!-- <input ion-datetime-picker date only-valid="{'after': 'today', 'inclusive': true}" ng-model="book.dateValue" value="{{book.dateValue | date: 'dd-MM-yyyy'}}" style="width: 100px;"> -->
+                <i class="icon ion-calendar"></i>
+                Choose Date and Time :&nbsp; 
+                <strong>{{book.dateValue| date: "dd-MM-yyyy"}}</strong>
         </div>
 		<div class="button-bar padding row" style="overflow: auto">
 			<ion-radio ng-repeat="time in timeList"

@@ -8,7 +8,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic.rating', 'jett
 
 .constant('MYconfig', {
   'appName': 'Reserva',
-  'appVersion': '1.0.0',
+  'appVersion': '0.0.9',
   'apiURL': 'http://reserva-front.nadyne.com/'
 })
 

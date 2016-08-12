@@ -1,10 +1,10 @@
 <ion-view title="My Booking">
-    <ion-content class="no-header">
+    <ion-content class="no-header scroll-mybook" overflow-scroll="true">
 <ion-tabs class="tabs-top tabs-no-icon tabs-mybooking">
 
 	<ion-tab title="My Booking" on-select="vm.nearmeTab()">
-	<div class="list salon-list top93">
-		<div ng-repeat="item in bookservice">
+	<div class="list salon-list top93" overflow-scroll="true">
+		<div ng-repeat="item in bookservice" overflow-scroll="true">
 			<a class="item padding0" ng-click="showDetails = ! showDetails">
 			  
 			  <div class="row item-avatar item-thumbnail-left ava-mybook">

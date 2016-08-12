@@ -210,7 +210,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
   $scope.SignupForm = {};
   $scope.submitRegister = function(){
-    var link = MYconfig.apiURL + 'signup';
+    var link = MYconfig.apiURL + 'signup/';
 
     $http.post(link, $httpParamSerializerJQLike($scope.SignupForm) ).then(function (res){
       if (res.data.detailMessages.username) {

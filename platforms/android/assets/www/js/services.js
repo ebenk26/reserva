@@ -1,4 +1,4 @@
-angular.module('starter.services', ['ngCordova']);
+var app = angular.module('starter.services', ['ngCordova']);
 
 app.factory('AuthenticationService', function($window){
 	var loggedIn = false;
@@ -25,6 +25,27 @@ app.factory('Menus', function($http) {
 			return $http.get('http://porto3.nadyne.com/ktmweb/frontend/web/index.php/services/category/list', { params: { parent_id: $rootScope.parent_id } })
 		}
 	}
+});
+
+app.factory('Photo', function () {
+   return {
+      convertImageToBase64: function (url, callback, output) {
+			var img = new Image();
+			img.crossOrigin = 'Anonymous';
+			img.onload = function(){
+			    var canvas = document.createElement('CANVAS'),
+			        c = canvas.getContext('2d'), urlData;
+					canvas.height = this.height;
+					canvas.width = this.width;
+					c.drawImage(this, 0, 0);
+					urlData = canvas.toDataURL(output);
+					callback(urlData);
+					canvas = null;
+			};
+			img.src = url;
+      }
+
+   };
 });
 
 app.factory('ConnectivityMonitor', function($ionicPlatform, $rootScope, $cordovaNetwork){

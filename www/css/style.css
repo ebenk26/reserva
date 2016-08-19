@@ -390,13 +390,13 @@ display: none;
 
 .padding-mybook {
   padding-top: 27px;
-  padding-left: 15px;
+  padding-left: 85px;
 }
 
 .ava-mybook > img:first-child {
   max-width: 80px;
   max-height: 80px;
-  position: relative;
+  position: absolute;
   top: auto;
   left: 0px;
 }

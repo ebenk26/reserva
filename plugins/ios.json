@@ -36,7 +36,23 @@
             "APP_ID": "1107147336013228",
             "APP_NAME": "ReservaTesLogin",
             "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        },
+        "cordova-plugin-image-picker": {
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        },
+        "cordova-plugin-image-resizer": {
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        },
+        "cordova-plugin-media-capture": {
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.ionicframework.reserva504497"
+        }
+    }
 }

@@ -1,4 +1,5 @@
-cordova.define("cordova-plugin-googleplus.GooglePlus", function(require, exports, module) { function GooglePlus() {
+cordova.define("cordova-plugin-googleplus.GooglePlus", function(require, exports, module) {
+function GooglePlus() {
 }
 
 GooglePlus.prototype.isAvailable = function (callback) {

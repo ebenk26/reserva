@@ -404,3 +404,7 @@ display: none;
 .tabs-mybooking > .tabs {
     top: -49px;
 }
+
+.scroll-mybook .scroll{
+  height: auto;
+}

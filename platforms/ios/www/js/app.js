@@ -4,11 +4,11 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'ionic.rating', 'jett.ionic.filter.bar'])
+angular.module('starter', ['ionic', 'starter.controllers', 'ionic.rating', 'jett.ionic.filter.bar', 'editAccount.controllers'])
 
 .constant('MYconfig', {
   'appName': 'Reserva',
-  'appVersion': '1.0.0',
+  'appVersion': '0.0.9',
   'apiURL': 'http://reserva-front.nadyne.com/'
 })
 
@@ -84,6 +84,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic.rating', 'jett
   $stateProvider
 
     .state('app', {
+    cache: false,
     url: '/app',
     abstract: true,
     templateUrl: 'templates/menu.html',
@@ -227,6 +228,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic.rating', 'jett
     }
   })
   .state('app.mybooking', {
+    cache: false,
     url: '/mybooking',
     views: {
       'menuContent': {
@@ -234,6 +236,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic.rating', 'jett
         controller: 'Mybooking'
       }
     }
+  })
+ .state('app.edit_account', {
+      cache: false,
+      url: '/edit_account',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/edit_account.html',
+          controller: 'editAccountCtrl'
+        }
+      }
   })
   .state('app.favourite', {
     url: '/favourite',

@@ -10,6 +10,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   //});
   //login to see detail
   $rootScope.loginPage = 0;
+  $rootScope.masukmybook = 0;
 
   if ('1' == $window.localStorage.getItem('sesLogin')){
     var userdata = $window.localStorage.getItem('userdata');
@@ -65,6 +66,20 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   // Open the login modal
   $scope.detailVoucher = function() {
     $scope.modalvoucher.show();
+  };
+
+  // Activation register
+  $ionicModal.fromTemplateUrl('templates/activation_register.html', {
+    scope: $scope,
+    backdropClickToClose: false
+  }).then(function(modal) {
+    $scope.modalactivregis = modal;
+  });
+
+
+  // Open the login modal
+  $scope.detailActivregis = function() {
+    $scope.modalactivregis.show();
   };
 
   $scope.detailSalon = function(res){
@@ -210,8 +225,10 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
   $scope.SignupForm = {};
   $scope.submitRegister = function(){
+    $ionicLoading.show({template: 'Sign Up...'});
     var link = MYconfig.apiURL + 'signup/';
-
+    console.log($scope.SignupForm['SignupForm[email]']);
+    $window.localStorage.setItem('regisemail', $scope.SignupForm['SignupForm[email]']);
     $http.post(link, $httpParamSerializerJQLike($scope.SignupForm) ).then(function (res){
       if (res.data.detailMessages.username) {
         var pop_up_data = JSON.stringify(res.data.message)+"<br>"+JSON.stringify(res.data.detailMessages.username);
@@ -238,9 +255,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
        cssClass: 'popupalert'
       });
       if (res.data.status == 1) {
+        $ionicLoading.hide();
         alertPopup.then(function(res) {
         console.log('masuk if');
-        $scope.login();
+        $scope.modalactivregis.show();
+        // $scope.login();
         });
       }else{
         alertPopup.then(function(res) {
@@ -485,8 +504,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
 
    $scope.Logout = function(){
     $window.localStorage.clear();
-    $ionicHistory.clearCache();
-    $ionicHistory.clearHistory();
+    // $ionicHistory.clearCache();
+    // $ionicHistory.clearHistory();
     $rootScope.fullName = "";
     $rootScope.emailUser = "";
     $rootScope.profilePic = "";
@@ -498,14 +517,20 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     });
 
     $window.localStorage.setItem('sesLogin', '');
+    $window.localStorage.setItem('userdata', '');
     $cordovaFacebook.logout().then(function(success) {
         // success
       }, function (error) {
         // error
       });
-    $cordovaGooglePlus.logout();
-    // $state.go('app.login');
-    $scope.login();
+    $window.localStorage.setItem('sesLogin', '');
+    $window.sessionStorage.clear();
+    $window.localStorage.clear();
+
+    // clear the cache before you navigate to a page
+    $ionicHistory.clearCache().then(function(){
+      $scope.login();
+    });
   };
 
   $scope.fbLogout = function(){
@@ -597,7 +622,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     var href = 'salon';
     var range = '1 km';
     var rating = value.total_rating;
-    var src = value.merchantImages[0].thumb_name;
+    if (value.merchantImages[0]) {
+      var src = value.merchantImages[0].thumb_name;
+    }else{
+      var src = "";
+    }
     var lat = value.lat;
     var lng = value.lon;
     // var from = new google.maps.LatLng(lat, lng);
@@ -627,7 +656,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     var href = 'salon';
     var range = '1 km';
     var rating2 = value.total_rating;
-    var src = value.merchantImages[0].thumb_name;
+    if (value.merchantImages[0]) {
+      var src = value.merchantImages[0].thumb_name;
+    }else{
+      var src = "";
+    }
     var lat = value.lat;
     var lng = value.lon;
     // var from = new google.maps.LatLng(lat, lng);
@@ -734,14 +767,21 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     if (value.id == $rootScope.idDetailSalon) {
       $scope.nameSalon = value.name;
       console.log(value);
+      if (value.merchantImages[0]) {
       $scope.salonData.imgUrl = value.merchantImages[0].thumb_name;
+      $rootScope.salonImage = value.merchantImages[0].thumb_name;
+    }else{
+      $scope.salonData.imgUrl = "";
+      $rootScope.salonImage = "";
+    }
+      // $scope.salonData.imgUrl = value.merchantImages[0].thumb_name;
       $scope.salonData.name = value.name;
       $scope.salonData.rate = value.total_rating;
       $scope.salonData.address = value.address;
       $rootScope.salonName = value.name;
       $rootScope.salonAddress = value.address;
       $rootScope.salonRating = value.total_rating;
-      $rootScope.salonImage = value.merchantImages[0].thumb_name;
+      // $rootScope.salonImage = value.merchantImages[0].thumb_name;
       $rootScope.salonId = value.id;
       $ionicLoading.hide();
     }
@@ -929,18 +969,23 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     if (value.id == $rootScope.idDetailSalon) {
       $scope.nameSalon = value.name;
       console.log(value);
-      $scope.salonData.imgUrl = value.merchantImages[0].thumb_name;
-      angular.forEach(value.merchantImages, function(value, key){
+      if (value.merchantImages[0]) {
+        $scope.salonData.imgUrl = value.merchantImages[0].thumb_name;
+        angular.forEach(value.merchantImages, function(value, key){
           image_arr.push({
             src : value.thumb_name,
           });
+          $scope.images = image_arr;
           console.log(value);
       });
-      
+      }else{
+        $scope.images = "";
+        $scope.salonData.imgUrl = "";
+      }
       $ionicLoading.hide();
     }
   }); 
-  $scope.images = image_arr;
+  
   // console.log($scope.images);
   // console.log($scope.salonData.imgUrl);
  /* $scope.bgImage = {
@@ -969,18 +1014,23 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     if (value.id == $rootScope.idDetailSalon) {
       $scope.nameSalon = value.name;
       console.log(value);
-      $scope.salonData.imgUrl = value.merchantImages[0].thumb_name;
-      angular.forEach(value.merchantImages, function(value, key){
+      if (value.merchantImages[0]) {
+        $scope.salonData.imgUrl = value.merchantImages[0].thumb_name;
+        angular.forEach(value.merchantImages, function(value, key){
           image_arr.push({
             src : value.thumb_name,
           });
+          $scope.images = image_arr;
           console.log(value);
       });
+      }else{
+        $scope.images = "";
+        $scope.salonData.imgUrl = "";
+      }
       
       $ionicLoading.hide();
     }
   }); 
-  $scope.images = image_arr;
   $scope.readOnly = true;
 
 })
@@ -1006,18 +1056,23 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     if (value.id == $rootScope.idDetailSalon) {
       $scope.nameSalon = value.name;
       console.log(value);
-      $scope.salonData.imgUrl = value.merchantImages[0].thumb_name;
-      angular.forEach(value.merchantImages, function(value, key){
+      if (value.merchantImages[0]) {
+        $scope.salonData.imgUrl = value.merchantImages[0].thumb_name;
+        angular.forEach(value.merchantImages, function(value, key){
           image_arr.push({
             src : value.thumb_name,
           });
+          $scope.images = image_arr;
           console.log(value);
       });
+      }else{
+        $scope.images = "";
+        $scope.salonData.imgUrl = "";
+      }
       
       $ionicLoading.hide();
     }
   }); 
-  $scope.images = image_arr;
   $scope.readOnly = true;
 
 })
@@ -1326,6 +1381,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   // }).then(function(modal) {
   //   $scope.rescheduleform = modal;
   // });
+  $rootScope.masukmybook = 1;
   $ionicModal.fromTemplateUrl('templates/reschedule.html', function($ionicModal) {
     $scope.modalreschedule = $ionicModal;
   }, {
@@ -1373,7 +1429,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
       { src: "img/salon2.png", bookStatus:"Done",rating: "3", time: "09:00", date: "2016-07-30", title: "SALON INDAH", title2: "JL MERDEKA", status: "Need Acceptance", services: ["Fashion Color","Acid Color","Partial Highlight"]},
       { src: "img/salon3.png", bookStatus:"Canceled",rating: "1", time: "09:00", date: "2016-07-30", title: "SALON CANTIK", title2: "JL MERDEKA", status: "Need Acceptance", services: ["Fashion Color","Acid Color","Partial Highlight"]}
   ];
-  console.log($scope.listSalon);
   var link = MYconfig.apiURL + 'reserva/booking/mybooking';
   $http.get(link).success(function(data){
     $ionicLoading.hide();
@@ -1462,13 +1517,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
         console.log("ga sama id"+value.id);
       }
     });
-    
-    // var date = new Date();
-    // var day = ("0" + date.getDate()).slice(-2);
-    // var month = ("0" + (date.getMonth() + 1)).slice(-2);
-    // var year = date.getFullYear();
-    
-    
     $rootScope.resubmit = $httpParamSerializerJQLike({
             "BookingTransaction":{
               date_time   : date_time,
@@ -1521,5 +1569,33 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   };
   $scope.CloseReschedule = function() {
     $scope.modalreschedule.hide();
+  };
+})
+
+.controller('activationRegister', function($scope, $stateParams, $rootScope, MYconfig, $http, $window, $ionicPopup) {
+  // Triggered in the login modal to close it
+  $scope.closeActivregis = function(reg) {
+    var link = MYconfig.apiURL + 'signup/activate?email='+$window.localStorage.getItem('regisemail')+'&activation_code='+reg.code;
+    $scope.Regis = {};
+    $http.get(link).then(function (res){
+      console.log(res);
+      if (res.data.status == 1) {
+        $ionicPopup.alert({
+             title: '',
+             template: 'Account has active, please login',
+             okType: 'button-assertive',
+             cssClass: 'popupalert'
+        });
+        $scope.modalactivregis.hide();
+        $scope.modal.show();
+      }else{
+        $ionicPopup.alert({
+             title: '',
+             template: 'Wrong Code',
+             okType: 'button-assertive',
+             cssClass: 'popupalert'
+        });
+      }
+    });
   };
 })

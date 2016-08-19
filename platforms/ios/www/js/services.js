@@ -1,4 +1,4 @@
-angular.module('starter.services', ['ngCordova']);
+var app = angular.module('starter.services', ['ngCordova']);
 
 app.factory('AuthenticationService', function($window){
 	var loggedIn = false;

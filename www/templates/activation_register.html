@@ -1,0 +1,19 @@
+<ion-modal-view class="ion-nifty-modal" ng-controller="activationRegister">
+  <div class="ion-modal-content-custom">
+    <ion-content class="padding">
+      <div style="color: white; font-size: 15px;text-align: center;">
+      Check your email to active your registration.<br>
+      You will get activation code.<br>
+      Paste your code into box.
+      <br><br>
+      <form ng-submit="closeActivregis(reg)">
+        <input placeholder="put your code here" ng-model="reg.code"><br><br>
+        <button class="button button-assertive" type="submit">
+          Submit
+        </button>
+      </form>
+      </div>
+        
+    </ion-content>
+  </div>
+</ion-modal-view>

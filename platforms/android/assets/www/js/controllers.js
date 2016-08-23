@@ -243,6 +243,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
       }else{
         var pop_up_data = JSON.stringify(res.data.message);
       }
+      $ionicLoading.hide();
       // $ionicPopup.alert({
       //      title: '',
       //      template: pop_up_data
@@ -262,6 +263,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
         // $scope.login();
         });
       }else{
+        $ionicLoading.hide();
         alertPopup.then(function(res) {
         console.log('masuk else');
         });
@@ -544,7 +546,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   
 })
 
-.controller('HomeCtrl', function($log, $scope, $state, $http, MYconfig, $ionicLoading, $ionicPopup, $window) {
+.controller('HomeCtrl', function($log, $scope, $state, $http, MYconfig, $ionicLoading, $ionicPopup, $window, $ionicModal, $ionicHistory, $rootScope) {
   
       var menu_utama_arr = [];
       var menu_utama = "";
@@ -577,6 +579,94 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
         });
     });
     $scope.menu_utama = menu_utama_arr;
+
+    $ionicModal.fromTemplateUrl('templates/filter_home.html', {
+      scope: $scope
+    }).then(function(modal) {
+      $scope.modalfilterhome = modal;
+    });
+
+    $scope.closeFilterhome = function() {
+      $scope.modalfilterhome.hide();
+    };
+
+    $scope.filterHome = function() {
+      $scope.modalfilterhome.show();
+    };
+    $scope.showFilterBar = function () {
+      $scope.modalfilterhome.show();
+    };
+    $scope.filter = {};
+    $scope.choice = {};
+    $scope.clearfilter = function () {
+      $scope.filter =  false;
+      $scope.choice = false;
+      $scope.filter = {};
+      $scope.choice = {};
+    };
+
+    $scope.filterhome = function(event){
+      $window.localStorage.setItem('merchantList', '');
+      $rootScope.title = '';
+      console.log(event);
+      console.log($scope.filter);
+      var srvcat = [];
+      angular.forEach($scope.filter, function(value, key){
+        // console.log(key);
+        if (key == 'hair') {  
+          srvcat.push('&srvcat[]=1');
+        }else if (key == 'face') {
+          srvcat.push('&srvcat[]=2');
+        }else if (key == 'makeup') {
+          srvcat.push('&srvcat[]=3');
+        }else if (key == 'brows') {
+          srvcat.push('&srvcat[]=4');
+        }else if (key == 'waxing') {
+          srvcat.push('&srvcat[]=5');
+        }else if (key == 'dental') {
+          srvcat.push('&srvcat[]=6');
+        }else if (key == 'nails') {
+         srvcat.push('&srvcat[]=7');
+        }else if (key == 'massage') {
+          srvcat.push('&srvcat[]=8');
+        }else if (key == 'mens') {
+          srvcat.push('&srvcat[]=9');
+        }
+      }); 
+      console.log(srvcat);
+      var srvcatnew = JSON.stringify(srvcat);
+      var str1 = srvcatnew.replace('","','');
+      var str2 = str1.replace('["','');
+      var str3 = str2.replace('"]','');
+      var str4 = str3.replace('","','');
+      console.log(str4);
+      $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+      $ionicLoading.show({template: 'Load Merchant List...'});
+      var apiMerchantList = 'reserva/merchants/list?p=1&psize=20'+str4+'&lat='+window.localStorage.getItem('latitude')+'&lon='+window.localStorage.getItem('latitude');
+      $http.get(MYconfig.apiURL + apiMerchantList)
+        .success(function(result) {
+          $log.log(MYconfig.apiURL + apiMerchantList);
+          $log.log(result.data);
+          $scope.items = result.data;
+          $ionicLoading.hide();
+          $window.localStorage.setItem('merchantList', JSON.stringify(result.data)); //simpan data ke local storage
+          $ionicHistory.nextViewOptions({
+            disableBack: false
+          });
+          $scope.modalfilterhome.hide();
+          $state.go('app.hair');
+        })
+        .error(function(data, status, headers,config){
+            $scope.modalfilterhome.hide();
+            $ionicLoading.hide();
+            $ionicPopup.alert({
+                 title: '',
+                 template: 'Get Merchant List Failed',
+                 okType: 'button-assertive',
+                 cssClass: 'popupalert'
+            });
+        });
+    }
 })
 
 .controller('PlaylistsCtrl', function($scope) {
@@ -1332,13 +1422,23 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
         .success(function(data) {
           console.log(data);
           if (data.status == 0) {
-            $ionicLoading.hide();
-            $ionicPopup.alert({
-                 title: '',
-                 template: 'Submit Booking Failed',
-                 okType: 'button-assertive',
-                 cssClass: 'popupalert'
-            });
+            if (data.detailMessages.service_id[0]) {
+              $ionicLoading.hide();
+              $ionicPopup.alert({
+                   title: '',
+                   template: data.detailMessages.service_id[0],
+                   okType: 'button-assertive',
+                   cssClass: 'popupalert'
+              });
+            }else{
+              $ionicLoading.hide();
+              $ionicPopup.alert({
+                   title: '',
+                   template: data.message,
+                   okType: 'button-assertive',
+                   cssClass: 'popupalert'
+              });
+              }
           }else{
             $ionicLoading.hide();
             $ionicHistory.nextViewOptions({

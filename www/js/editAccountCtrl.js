@@ -314,7 +314,9 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 							"full_name" 	: $scope.ProfilesMdl.full_name,
 							"bio" 			: $scope.ProfilesMdl.bio
 						}
-					}) ).then(function (response){
+					}) 
+			, { timeout : 10000 }
+			).then(function (response){
 
 						console.log('response update : ');
 						console.log(response);

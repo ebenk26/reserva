@@ -1,0 +1,41 @@
+<ion-modal-view class="ion-nifty-modal2" ng-controller="activationRegister">
+  <div class="ion-modal-content-custom">
+    <ion-content class="padding">
+    <form ng-submit="filterhome(choice)">
+      <div style="color: white; font-size: 15px;text-align: center;">
+        <div>
+          <ion-radio style="background-color: #f8f8f8" ng-model="choice.near" ng-value="'near'">Near Me</ion-radio>
+          <ion-radio style="background-color: #f8f8f8" ng-model="choice.location" ng-value="'location'">Location</ion-radio>
+          <input placeholder="search location" style="width: 100%;">
+          <ion-radio style="background-color: #f8f8f8" ng-model="choice.bestpromo" ng-value="'bestpromo'">Best Promotion</ion-radio>
+        </div>
+        <div>
+          <div class="row">
+            <div class="col">
+              <ion-checkbox ng-model="filter.hair">Hair</ion-checkbox>
+              <ion-checkbox ng-model="filter.makeup">Make-Up</ion-checkbox>
+              <ion-checkbox ng-model="filter.brows">Brows&Lashes</ion-checkbox>
+              <ion-checkbox ng-model="filter.nails">Nails</ion-checkbox>
+              <ion-checkbox ng-model="filter.waxing">Waxing</ion-checkbox>
+            </div>
+            <div class="col">
+              <ion-checkbox ng-model="filter.face">Face</ion-checkbox>
+              <ion-checkbox ng-model="filter.mens">Mens</ion-checkbox>
+              <ion-checkbox ng-model="filter.dental">Dental</ion-checkbox>
+              <ion-checkbox ng-model="filter.massage">Massage</ion-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+        <button class="button button-assertive col" type="submit" style="border: 1px solid #ddd;">
+          Submit
+        </button>
+        <button class="button button-stable col" ng-click="clearfilter()" style="border: 1px solid #ddd;" type="button">
+          Clear Filter
+        </button>
+        </div>
+      </div>
+      </form>
+    </ion-content>
+  </div>
+</ion-modal-view>

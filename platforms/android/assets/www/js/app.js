@@ -61,7 +61,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic.rating', 'jett
                  });
              }
          }
-    var posOptions = { enableHighAccuracy: true, timeout: 20000, maximumAge: 0};
+    var posOptions = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0};
     $cordovaGeolocation
       .getCurrentPosition(posOptions)
       .then(function (position) {
@@ -254,6 +254,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic.rating', 'jett
         'menuContent': {
           templateUrl: 'templates/activation_register.html',
           controller: 'activationRegister'
+        }
+      }
+  })
+  .state('app.filter_home', {
+      cache: false,
+      url: '/filter_home',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/filter_home.html'
         }
       }
   })

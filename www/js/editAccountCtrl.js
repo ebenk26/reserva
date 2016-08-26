@@ -180,10 +180,7 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 										}, imageData[0].fullPath, 200, 0, {
 											resizeType : ImageResizer.RESIZE_TYPE_PIXEL,
 											imageDataType : ImageResizer.IMAGE_DATA_TYPE_URL,
-											pixelDensity: true,
-									        storeImage: false,
-									        photoAlbum: false,
-									        format: 'jpg'
+											pixelDensity: true
 										});
 									}
 									else{
@@ -192,7 +189,7 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 								}, function(error){
 									console.log(error);
 								}, imageData[0].fullPath);
-								console.log(imageData);
+
 								var imgDataRaw = imageData[0].fullPath;
 
 								$jrCrop.crop({
@@ -327,7 +324,7 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 							"full_name" 	: $scope.ProfilesMdl.full_name,
 							"bio" 			: ""
 						}
-					}) 
+					}), { timeout : 30000 }
 			
 			).then(function (response){
 
@@ -359,7 +356,9 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 				$ionicLoading.hide();
 				$ionicPopup.alert({
 						 title: '',
-						 template: error
+						 template: 'Timeout, Photo size too big. Please pick another file.',
+						 okType: 'button-assertive',
+        				cssClass: 'popupalert'
 				});
 		    });
 		};//end scope.submitAccount

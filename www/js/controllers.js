@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picker'])
 
-.controller('AppCtrl', function($scope, $rootScope, $ionicModal, $cordovaFacebook, $cordovaGooglePlus, $timeout, MYconfig, $window, $http, $ionicPopup, $httpParamSerializerJQLike, $ionicHistory, $state, $ionicLoading, $log) {
+.controller('AppCtrl', function($scope, $rootScope, $ionicModal, $cordovaFacebook, $cordovaGooglePlus, $timeout, MYconfig, $window, $http, $ionicPopup, $httpParamSerializerJQLike, $ionicHistory, $state, $ionicLoading, $log,$ionicActionSheet,$cordovaImagePicker,$jrCrop) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -11,6 +11,85 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   //login to see detail
   $rootScope.loginPage = 0;
   $rootScope.masukmybook = 0;
+  $scope.imageAddPhotoReg = 'img/add_photos.png';
+
+  $scope.showAction = function () {
+  //register photo
+  var hideSheet = $ionicActionSheet.show({
+      buttons: [
+          { text: '<b>Pick</b>' }
+      ],
+      title: 'Add Photo',
+      cancelText: 'Cancel',
+      cancel: function () {
+        //
+      },
+     buttonClicked: function (index) {
+        console.log(index);
+        if (index == 0) {
+          console.log("masuk else pick");
+           var options = {
+              maximumImagesCount: 1,
+              width: 200,
+         height: 200,
+         quality: 40
+           };
+
+           // pick
+           $cordovaImagePicker.getPictures(options).then(function (results) {
+            console.log("pick");
+              window.imageResizer.getImageSize(function(imageSize){
+              console.log(imageSize);
+              if (imageSize.width > 520) {
+                console.log('--> image di resize');
+                window.imageResizer.resizeImage(function(result){
+                  console.log(result);
+                }, function(error){
+                  console.log(error);
+                }, results[0], 200, 0, {
+                  resizeType : ImageResizer.RESIZE_TYPE_PIXEL,
+                  imageDataType : ImageResizer.IMAGE_DATA_TYPE_URL,
+                  pixelDensity: true,
+                      storeImage: false,
+                      photoAlbum: false,
+                      format: 'jpg'
+                });
+              }
+              else{
+                console.log('--> image tidak resize');
+              }
+            }, function(error){
+              console.log(error);
+            }, results[0]);
+
+            var imgDataRaw = results[0];
+
+            $jrCrop.crop({
+                url: imgDataRaw,
+                width: 200,
+                height: 200
+            }).then(function(canvas) {
+                // success!
+
+               var imageCrop = canvas.toDataURL();
+               console.log(imgDataRaw);
+               console.log('image jrcrop');
+               $scope.imageAddPhotoReg = imageCrop;
+              $rootScope.imageReg = imageCrop;
+
+            }, function() {
+                // User canceled or couldn't load image.
+                console.log('crop failed');
+            });
+
+           });
+        } else if (index == 1) {
+          
+        }
+        return true;
+     }//end buttonClicked
+  })
+  };
 
   if ('1' == $window.localStorage.getItem('sesLogin')){
     var userdata = $window.localStorage.getItem('userdata');
@@ -226,6 +305,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   $scope.SignupForm = {};
   $scope.submitRegister = function(){
     $ionicLoading.show({template: 'Sign Up...'});
+    $scope.SignupForm['SignupForm[image]'] = $rootScope.imageReg;
     var link = MYconfig.apiURL + 'signup/';
     console.log($scope.SignupForm['SignupForm[email]']);
     $window.localStorage.setItem('regisemail', $scope.SignupForm['SignupForm[email]']);
@@ -845,8 +925,17 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
 
 })
 
-.controller('SalonCtrl', function($scope,$window,$rootScope,$ionicLoading) {
+.controller('SalonCtrl', function($http,MYconfig, $scope,$window,$rootScope,$ionicLoading) {
   $ionicLoading.show({template: 'Load Detail Merchant...'});
+  var link = MYconfig.apiURL + 'reserva/merchants/schedulesbymerchant?mid=';
+  // Posting data to php file
+  $http.get(link+$rootScope.idDetailSalon+'&df='+(-1).days().fromNow().toString('yyyy-MM-dd')+'&dt='+(6).days().fromNow().toString('yyyy-MM-dd')).success(function(data){
+      console.log(data.data.schedules);
+      $rootScope.schedules = data.data.schedules;
+    })
+    .error(function(err){
+      console.log(err);
+    })
   $scope.salonData = {};
   // $scope.salonData.imgUrl = "img/salon1.png";
   $scope.rating = {};
@@ -1015,28 +1104,10 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     $scope.number = 0;
     $scope.book = {};
     $scope.bookService = function() {
-    $ionicLoading.show({template: 'Load Service Detail...'});
-    $rootScope.bookservice = $scope.book;
-        // // Posting data to php file
-        // $http({
-        //   method  : 'POST',
-        //   url     : link,
-        //   // data    : $scope.book, //forms user object
-        //   data    : $httpParamSerializerJQLike($scope.book), //forms user object
-        //   headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'} 
-        //  })
-        //   .success(function(data) {
-        //     // if (data.errors) {
-        //     //   // Showing errors.
-        //     //   $scope.errorName = data.errors.name;
-        //     //   $scope.errorUserName = data.errors.username;
-        //     //   $scope.errorEmail = data.errors.email;
-        //     // } else {
-        //     //   $scope.message = data.message;
-        //     // }
-        //   });
+        $ionicLoading.show({template: 'Load Service Detail...'});
+        $rootScope.bookservice = $scope.book;
         $state.go('app.book_datetime');
-        };
+    };
 })
 
 .controller('GalleryCtrl', function($scope,$rootScope,$http, MYconfig, $ionicLoading, $ionicPopup, $window,$log,$ionicHistory) {
@@ -1176,9 +1247,55 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   $scope.rating.rate = 4;
   $scope.rating.max = 5;
 })
-.controller('BookDatetime', function($scope, $stateParams, $rootScope, $window, $ionicLoading, $http, $httpParamSerializerJQLike, $ionicPopup, $state) {
+.controller('BookDatetime', function($rootScope, MYconfig, $scope, $stateParams, $rootScope, $window, $ionicLoading, $http, $httpParamSerializerJQLike, $ionicPopup, $state) {
+  $ionicLoading.show({template: 'Load Booking Detail...'});
   console.log($rootScope.bookservice);
+  
+  $scope.sch0 = false;
+  $scope.sch1 = false;
+  $scope.sch2 = false;
+  $scope.sch3 = false;
+  $scope.sch4 = false;
+  $scope.sch5 = false;
+  $scope.sch6 = false;
+  var n = 1;
+  angular.forEach($rootScope.schedules, function(value, key){
+    // console.log(value);
+    // console.log(key);
+    if (key == 0) {
+      if (value.is_open == 0) {
+        $scope.sch0 = true;
+      }
+    }else if (key == 1) {
+      if (value.is_open == 0) {
+        $scope.sch1 = true;
+      }
+    }else if (key == 2) {
+      if (value.is_open == 0) {
+        $scope.sch2 = true;
+      }
+    }else if (key == 3) {
+      if (value.is_open == 0) {
+        $scope.sch3 = true;
+      }
+    }else if (key == 4) {
+      if (value.is_open == 0) {
+        $scope.sch4 = true;
+      }
+    }else if (key == 5) {
+      if (value.is_open == 0) {
+        $scope.sch5 = true;
+      }
+    }else if (key == 6) {
+      if (value.is_open == 0) {
+        $scope.sch6 = true;
+      }
+    }
+    n++;
+    if (n == 7) {}
+  });
   $window.localStorage.setItem( 'timelist', 0 );
+  $window.localStorage.setItem( 'datelist', 0 );
   $scope.salonData = {};
   $scope.rating = {};
   $scope.salonData.name = $rootScope.salonName;
@@ -1260,7 +1377,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   $ionicLoading.hide();
 
   $scope.data = {};
+  $scope.dates = {};
   $scope.data.grossOptions = 'time';
+  $scope.dates.dateOptions = 'date';
   $scope.timeList = [
       { text: "08:00", value: "08:00" },
       { text: "09:00", value: "09:00" },
@@ -1273,15 +1392,43 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
       { text: "16:00", value: "16:00" },
       { text: "17:00", value: "17:00" }
   ];
+  var dayNames = [
+    "Sun", "Mon", "Tue",
+    "Wed", "Thur", "Fri", "Sat"
+  ];
+  $scope.dateList = [
+      { disable:$scope.sch0, text: (0).days().fromNow().toString('dd'), day: dayNames[date.getDay()], month:(0).days().fromNow().toString('MMMM yyyy'), date:(0).days().fromNow().toString('dd-MM-yyyy')},
+      { disable:$scope.sch1, text: (1).days().fromNow().toString('dd'), day: dayNames[(date.getDay() + 1) % 7], month:(1).days().fromNow().toString('MMMM yyyy'), date:(1).days().fromNow().toString('dd-MM-yyyy')},
+      { disable:$scope.sch2, text: (2).days().fromNow().toString('dd'), day: dayNames[(date.getDay() + 2) % 7], month:(2).days().fromNow().toString('MMMM yyyy'), date:(2).days().fromNow().toString('dd-MM-yyyy')},
+      { disable:$scope.sch3, text: (3).days().fromNow().toString('dd'), day: dayNames[(date.getDay() + 3) % 7], month:(3).days().fromNow().toString('MMMM yyyy'), date:(3).days().fromNow().toString('dd-MM-yyyy')},
+      { disable:$scope.sch4, text: (4).days().fromNow().toString('dd'), day: dayNames[(date.getDay() + 4) % 7], month:(4).days().fromNow().toString('MMMM yyyy'), date:(4).days().fromNow().toString('dd-MM-yyyy')},
+      { disable:$scope.sch5, text: (5).days().fromNow().toString('dd'), day: dayNames[(date.getDay() + 5) % 7], month:(5).days().fromNow().toString('MMMM yyyy'), date:(5).days().fromNow().toString('dd-MM-yyyy')},
+      { disable:$scope.sch6, text: (6).days().fromNow().toString('dd'), day: dayNames[(date.getDay() + 6) % 7], month:(6).days().fromNow().toString('MMMM yyyy'), date:(6).days().fromNow().toString('dd-MM-yyyy')},
+  ];
+  var monthNames = [
+    "January", "February", "March",
+    "April", "May", "June", "July",
+    "August", "September", "October",
+    "November", "December"
+  ];
+  $scope.monthList = monthNames[date.getMonth()] +" "+date.getFullYear();
   $scope.updateTimeList = function(item) {
     $window.localStorage.setItem( 'timelist', item.value );
     console.log( 'Time List: ' + item.value );
-  }
+  };
+  $scope.updateDateList = function(item) {
+    $window.localStorage.setItem( 'datelist', item.date );
+    console.log( 'Date List: ' + item.date );
+    $scope.monthList = item.month;
+    $rootScope.dateListret = item.date;
+  };
 
   $scope.checkout = function() {
-    if ($window.localStorage.getItem('timelist') && $window.localStorage.getItem('timelist') != 0) {
+    // if ($window.localStorage.getItem('timelist') && $window.localStorage.getItem('timelist') != 0) {
+    if ($window.localStorage.getItem('datelist') && $window.localStorage.getItem('timelist') && $window.localStorage.getItem('timelist') != 0 && $window.localStorage.getItem('datelist') != 0) {
       console.log("ada time");
-      $rootScope.date = $scope.book.dateValue;
+      // $rootScope.date = $scope.book.dateValue;
+      $rootScope.date = $scope.dateListret;
       $rootScope.time = $window.localStorage.getItem('timelist');
       $rootScope.promocodes = $scope.book.promoCode;
       console.log($scope.book.promoCode);
@@ -1295,7 +1442,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
       $rootScope.dataConfirm = $httpParamSerializerJQLike({
               "BookingTransaction":{
                 date_time   : date_time,
-                "date"   : formatDate($scope.book.dateValue),
+                // "date"   : formatDate($scope.book.dateValue),
+                "date"   : formatDate($scope.dateListret),
                 "booking_type_id"    : 1,
                 service_id:service_id,
                 quantity:quantity,
@@ -1306,7 +1454,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
       console.log("kosong");
       $ionicPopup.alert({
            title: '',
-           template: 'Please Choose Time',
+           template: 'Please Choose Date and Time',
            okType: 'button-assertive',
            cssClass: 'popupalert'
       });
@@ -1387,7 +1535,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
           });
           $scope.hours = i;
           if(value.price != null){
-            sum += value.price;
+            sum += Math.round(value.price);
           }
           i++;
 
@@ -1396,7 +1544,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     });
   }); 
   $scope.servName = bookServArr;
-  $scope.sumPrice = sum;
+  $rootScope.sumPrice = sum;
   console.log(sum);
   console.log(service_id);
 
@@ -1572,7 +1720,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
 
   $scope.reschedule = function(id) {
     $scope.data = {};
+    $scope.dates = {};
     $scope.data.grossOptions = 'time';
+    $scope.dates.dateOptions = 'date';
     $rootScope.idMybook = id;
     var service_id = [];
     var date_time = {};

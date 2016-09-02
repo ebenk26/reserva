@@ -13,6 +13,14 @@
         <form ng-submit="submitRegister()">
 			<div class="list">
 
+				<div class="content">
+					<div class="label-info-hashtag" style="text-align: center;">
+
+						<img class="buttonAddPhoto icon-add" style="margin: 0 auto;width:130px;" src="{{imageAddPhotoReg}}" ng-click="showAction()" ng-model="SignupForm['SignupForm[image]']"/>
+
+					</div>
+				</div>
+
 				<label class="item item-input">
 					<input type="text" name="SignupForm[full_name]" ng-model="SignupForm['SignupForm[full_name]']" placeholder="Full Name">
 				</label>
@@ -22,11 +30,11 @@
 				</label>
 
 				<label class="item item-input">
-					<input type="text" name="SignupForm[email]" ng-model="SignupForm['SignupForm[email]']" placeholder="Email">
+					<input type="number" name="SignupForm[phone_number]" ng-model="SignupForm['SignupForm[phone_number]']" placeholder="Phone Number">
 				</label>
 
 				<label class="item item-input">
-					<input type="number" name="SignupForm[phone_number]" ng-model="SignupForm['SignupForm[phone_number]']" placeholder="Phone Number">
+					<input type="text" name="SignupForm[email]" ng-model="SignupForm['SignupForm[email]']" placeholder="Email">
 				</label>
 
 				<label class="item item-input">

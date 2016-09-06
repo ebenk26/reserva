@@ -161,6 +161,20 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     $scope.modalactivregis.show();
   };
 
+  // Forgot Password
+  $ionicModal.fromTemplateUrl('templates/forgot_password.html', {
+    scope: $scope,
+    backdropClickToClose: false
+  }).then(function(modal) {
+    $scope.modalforgotpwd = modal;
+  });
+
+
+  // Open the login modal
+  $scope.forgotPwd = function() {
+    $scope.modalforgotpwd.show();
+  };
+
   $scope.detailSalon = function(res){
     if ($window.localStorage.getItem('sesLogin') == 1) {
       console.log(res);
@@ -258,6 +272,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   $scope.registerPage = function(){
     $scope.closeLogin();
     $state.go('app.register');
+  };
+
+  $scope.forgotpwdPage = function(){
+    $scope.closeLogin();
+    $scope.modalforgotpwd.show();
   };
 
   $scope.title = function(res){
@@ -685,7 +704,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
       $scope.choice = {};
     };
 
-    $scope.filterhome = function(event){
+    $scope.filterhome = function(event,location){
       $window.localStorage.setItem('merchantList', '');
       $rootScope.title = '';
       console.log(event);
@@ -722,8 +741,65 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
       console.log(str4);
       $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
       $ionicLoading.show({template: 'Load Merchant List...'});
-      var apiMerchantList = 'reserva/merchants/list?p=1&psize=20'+str4+'&lat='+window.localStorage.getItem('latitude')+'&lon='+window.localStorage.getItem('latitude');
-      $http.get(MYconfig.apiURL + apiMerchantList)
+      if (event == "location") {
+        $ionicLoading.hide();
+        var lat;
+        var lng;
+        var uri = encodeURI(location);
+        var linkLoc = "https://maps.googleapis.com/maps/api/geocode/json?address="+uri+"&key=AIzaSyAyetlWcoLWN69ZE4KuNegiupMm7zAt8Xo";
+        $http.get(linkLoc)
+        .success(function(result){
+          if (result.status != "ZERO_RESULTS") {
+            lat = result.results[0].geometry.location.lat;
+            lng = result.results[0].geometry.location.lng;
+            console.log(lat);
+            console.log(lng);
+            var apiMerchantList = 'reserva/merchants/list?p=1&psize=20'+str4+'&lat='+lat+'&lon='+lng;
+            $http.get(MYconfig.apiURL + apiMerchantList)
+            .success(function(result) {
+              $log.log(MYconfig.apiURL + apiMerchantList);
+              $log.log(result.data);
+              $scope.items = result.data;
+              $ionicLoading.hide();
+              $window.localStorage.setItem('merchantList', JSON.stringify(result.data)); //simpan data ke local storage
+              $ionicHistory.nextViewOptions({
+                disableBack: false
+              });
+              $scope.modalfilterhome.hide();
+              $state.go('app.hair');
+            })
+            .error(function(data, status, headers,config){
+                $scope.modalfilterhome.hide();
+                $ionicLoading.hide();
+                $ionicPopup.alert({
+                     title: '',
+                     template: 'Get Merchant List Failed',
+                     okType: 'button-assertive',
+                     cssClass: 'popupalert'
+                });
+            });
+          }else{
+            $ionicPopup.alert({
+                 title: '',
+                 template: result.status,
+                 okType: 'button-assertive',
+                 cssClass: 'popupalert'
+            });
+          }
+        })
+        .error(function(err){
+          $ionicLoading.hide();
+          console.log(err);
+          $ionicPopup.alert({
+               title: '',
+               template: err,
+               okType: 'button-assertive',
+               cssClass: 'popupalert'
+          });
+        });
+      }else if (event == "bestpromo") {
+        var apiMerchantList = 'reserva/merchants/list?p=1&psize=20'+str4+'&lat='+window.localStorage.getItem('latitude')+'&lon='+window.localStorage.getItem('latitude');
+        $http.get(MYconfig.apiURL + apiMerchantList)
         .success(function(result) {
           $log.log(MYconfig.apiURL + apiMerchantList);
           $log.log(result.data);
@@ -746,6 +822,32 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
                  cssClass: 'popupalert'
             });
         });
+      }else if (event == "near") {
+        var apiMerchantList = 'reserva/merchants/list?p=1&psize=20'+str4+'&lat='+window.localStorage.getItem('latitude')+'&lon='+window.localStorage.getItem('latitude');
+        $http.get(MYconfig.apiURL + apiMerchantList)
+        .success(function(result) {
+          $log.log(MYconfig.apiURL + apiMerchantList);
+          $log.log(result.data);
+          $scope.items = result.data;
+          $ionicLoading.hide();
+          $window.localStorage.setItem('merchantList', JSON.stringify(result.data)); //simpan data ke local storage
+          $ionicHistory.nextViewOptions({
+            disableBack: false
+          });
+          $scope.modalfilterhome.hide();
+          $state.go('app.hair');
+        })
+        .error(function(data, status, headers,config){
+            $scope.modalfilterhome.hide();
+            $ionicLoading.hide();
+            $ionicPopup.alert({
+                 title: '',
+                 template: 'Get Merchant List Failed',
+                 okType: 'button-assertive',
+                 cssClass: 'popupalert'
+            });
+        });
+      }
     }
 })
 
@@ -1848,4 +1950,68 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
       }
     });
   };
+})
+
+.controller('forgotPassword', function($scope, $stateParams, $rootScope, MYconfig, $http, $window, $ionicPopup, $httpParamSerializerJQLike, $ionicLoading) {
+  // Triggered in the login modal to close it
+  $scope.forgetPwdform = function(reg) {
+    if (typeof reg.email != "undefined") {
+      var link = MYconfig.apiURL + 'signup/reset-password';
+      $ionicLoading.show({template: 'Send data...'});
+      $scope.dataForgetpwd = $httpParamSerializerJQLike({
+                "PasswordResetRequestForm":{
+                  "email"   : reg.email,
+                  "reset_link"   : "http://porto3.nadyne.com/reserva_fweb/site/ResetPassword"
+                }});
+      $http({
+          method  : 'POST',
+          url     : link,
+          data    : $scope.dataForgetpwd, //forms user object
+          headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'} 
+         })
+          .success(function(data) {
+            $ionicLoading.hide();
+            console.log(data);
+            if (data.status == 1) {
+              $scope.modalforgotpwd.hide();
+              $ionicPopup.alert({
+                   title: '',
+                   template: 'Please check your email at '+reg.email+' for your entry new password',
+                   okType: 'button-assertive',
+                   cssClass: 'popupalert'
+              });
+            }else{
+              $scope.modalforgotpwd.hide();
+              $ionicPopup.alert({
+                   title: '',
+                   template: data.detailMessages.email[0],
+                   okType: 'button-assertive',
+                   cssClass: 'popupalert'
+              });
+            }
+          })
+          .error(function(err){
+            $ionicLoading.hide();
+            $scope.modalforgotpwd.hide();
+            console.log(err);
+            $ionicPopup.alert({
+                   title: '',
+                   template: err,
+                   okType: 'button-assertive',
+                   cssClass: 'popupalert'
+              });
+          });
+    }else{
+      $ionicPopup.alert({
+           title: '',
+           template: "Please fill the form",
+           okType: 'button-assertive',
+           cssClass: 'popupalert'
+      });
+    }
+  }
+
+    $scope.cancelforgetPwd = function(){
+      $scope.modalforgotpwd.hide();
+    }
 })

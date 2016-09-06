@@ -1,13 +1,13 @@
-<ion-modal-view class="ion-nifty-modal2" ng-controller="activationRegister">
+<ion-modal-view class="ion-nifty-modal2">
   <div class="ion-modal-content-custom">
     <ion-content class="padding">
-    <form ng-submit="filterhome(choice)">
+    <form ng-submit="filterhome(choice,location)">
       <div style="color: white; font-size: 15px;text-align: center;">
         <div>
-          <ion-radio style="background-color: #f8f8f8" ng-model="choice.near" ng-value="'near'">Near Me</ion-radio>
-          <ion-radio style="background-color: #f8f8f8" ng-model="choice.location" ng-value="'location'">Location</ion-radio>
-          <input placeholder="search location" style="width: 100%;">
-          <ion-radio style="background-color: #f8f8f8" ng-model="choice.bestpromo" ng-value="'bestpromo'">Best Promotion</ion-radio>
+          <ion-radio style="background-color: #f8f8f8" ng-model="choice" ng-value="'near'">Near Me</ion-radio>
+          <ion-radio style="background-color: #f8f8f8" ng-model="choice" ng-value="'location'">Location</ion-radio>
+          <input placeholder="search location" style="width: 100%;" ng-model="location">
+          <ion-radio style="background-color: #f8f8f8" ng-model="choice" ng-value="'bestpromo'">Best Promotion</ion-radio>
         </div>
         <div>
           <div class="row">

@@ -266,6 +266,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic.rating', 'jett
         }
       }
   })
+  .state('app.forgot_password', {
+      cache: false,
+      url: '/forgot_password',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/forgot_password.html'
+        }
+      }
+  })
   .state('app.favourite', {
     url: '/favourite',
     views: {

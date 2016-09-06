@@ -161,6 +161,20 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     $scope.modalactivregis.show();
   };
 
+  // Forgot Password
+  $ionicModal.fromTemplateUrl('templates/forgot_password.html', {
+    scope: $scope,
+    backdropClickToClose: false
+  }).then(function(modal) {
+    $scope.modalforgotpwd = modal;
+  });
+
+
+  // Open the login modal
+  $scope.forgotPwd = function() {
+    $scope.modalforgotpwd.show();
+  };
+
   $scope.detailSalon = function(res){
     if ($window.localStorage.getItem('sesLogin') == 1) {
       console.log(res);
@@ -258,6 +272,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   $scope.registerPage = function(){
     $scope.closeLogin();
     $state.go('app.register');
+  };
+
+  $scope.forgotpwdPage = function(){
+    $scope.closeLogin();
+    $scope.modalforgotpwd.show();
   };
 
   $scope.title = function(res){
@@ -1848,4 +1867,68 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
       }
     });
   };
+})
+
+.controller('forgotPassword', function($scope, $stateParams, $rootScope, MYconfig, $http, $window, $ionicPopup, $httpParamSerializerJQLike, $ionicLoading) {
+  // Triggered in the login modal to close it
+  $scope.forgetPwdform = function(reg) {
+    if (typeof reg.email != "undefined") {
+      var link = MYconfig.apiURL + 'signup/reset-password';
+      $ionicLoading.show({template: 'Send data...'});
+      $scope.dataForgetpwd = $httpParamSerializerJQLike({
+                "PasswordResetRequestForm":{
+                  "email"   : reg.email,
+                  "reset_link"   : "http://porto3.nadyne.com/reserva_fweb/site/ResetPassword"
+                }});
+      $http({
+          method  : 'POST',
+          url     : link,
+          data    : $scope.dataForgetpwd, //forms user object
+          headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'} 
+         })
+          .success(function(data) {
+            $ionicLoading.hide();
+            console.log(data);
+            if (data.status == 1) {
+              $scope.modalforgotpwd.hide();
+              $ionicPopup.alert({
+                   title: '',
+                   template: 'Please check your email at '+reg.email+' for your entry new password',
+                   okType: 'button-assertive',
+                   cssClass: 'popupalert'
+              });
+            }else{
+              $scope.modalforgotpwd.hide();
+              $ionicPopup.alert({
+                   title: '',
+                   template: data.detailMessages.email[0],
+                   okType: 'button-assertive',
+                   cssClass: 'popupalert'
+              });
+            }
+          })
+          .error(function(err){
+            $ionicLoading.hide();
+            $scope.modalforgotpwd.hide();
+            console.log(err);
+            $ionicPopup.alert({
+                   title: '',
+                   template: err,
+                   okType: 'button-assertive',
+                   cssClass: 'popupalert'
+              });
+          });
+    }else{
+      $ionicPopup.alert({
+           title: '',
+           template: "Please fill the form",
+           okType: 'button-assertive',
+           cssClass: 'popupalert'
+      });
+    }
+  }
+
+    $scope.cancelforgetPwd = function(){
+      $scope.modalforgotpwd.hide();
+    }
 })

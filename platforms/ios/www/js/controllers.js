@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picker'])
 
-.controller('AppCtrl', function($scope, $rootScope, $ionicModal, $cordovaFacebook, $cordovaGooglePlus, $timeout, MYconfig, $window, $http, $ionicPopup, $httpParamSerializerJQLike, $ionicHistory, $state, $ionicLoading, $log) {
+.controller('AppCtrl', function($scope, $rootScope, $ionicModal, $cordovaFacebook, $cordovaGooglePlus, $timeout, MYconfig, $window, $http, $ionicPopup, $httpParamSerializerJQLike, $ionicHistory, $state, $ionicLoading, $log,$ionicActionSheet,$cordovaImagePicker,$jrCrop) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -11,6 +11,85 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   //login to see detail
   $rootScope.loginPage = 0;
   $rootScope.masukmybook = 0;
+  $scope.imageAddPhotoReg = 'img/add_photos.png';
+
+  $scope.showAction = function () {
+  //register photo
+  var hideSheet = $ionicActionSheet.show({
+      buttons: [
+          { text: '<b>Pick</b>' }
+      ],
+      title: 'Add Photo',
+      cancelText: 'Cancel',
+      cancel: function () {
+        //
+      },
+     buttonClicked: function (index) {
+        console.log(index);
+        if (index == 0) {
+          console.log("masuk else pick");
+           var options = {
+              maximumImagesCount: 1,
+              width: 200,
+         height: 200,
+         quality: 40
+           };
+
+           // pick
+           $cordovaImagePicker.getPictures(options).then(function (results) {
+            console.log("pick");
+              window.imageResizer.getImageSize(function(imageSize){
+              console.log(imageSize);
+              if (imageSize.width > 520) {
+                console.log('--> image di resize');
+                window.imageResizer.resizeImage(function(result){
+                  console.log(result);
+                }, function(error){
+                  console.log(error);
+                }, results[0], 200, 0, {
+                  resizeType : ImageResizer.RESIZE_TYPE_PIXEL,
+                  imageDataType : ImageResizer.IMAGE_DATA_TYPE_URL,
+                  pixelDensity: true,
+                      storeImage: false,
+                      photoAlbum: false,
+                      format: 'jpg'
+                });
+              }
+              else{
+                console.log('--> image tidak resize');
+              }
+            }, function(error){
+              console.log(error);
+            }, results[0]);
+
+            var imgDataRaw = results[0];
+
+            $jrCrop.crop({
+                url: imgDataRaw,
+                width: 200,
+                height: 200
+            }).then(function(canvas) {
+                // success!
+
+               var imageCrop = canvas.toDataURL();
+               console.log(imgDataRaw);
+               console.log('image jrcrop');
+               $scope.imageAddPhotoReg = imageCrop;
+              $rootScope.imageReg = imageCrop;
+
+            }, function() {
+                // User canceled or couldn't load image.
+                console.log('crop failed');
+            });
+
+           });
+        } else if (index == 1) {
+          
+        }
+        return true;
+     }//end buttonClicked
+  })
+  };
 
   if ('1' == $window.localStorage.getItem('sesLogin')){
     var userdata = $window.localStorage.getItem('userdata');
@@ -52,204 +131,6 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     $scope.modal.show();
   };
 
-  // mybooking 2nd controller
-  $scope.clickmybook = function() {
-    if ($rootScope.masukmybook == 1) {
-      console.log("clickmybook");
-      $ionicModal.fromTemplateUrl('templates/reschedule.html', function($ionicModal) {
-    $scope.modalreschedule = $ionicModal;
-  }, {
-      // Use our scope for the scope of the modal to keep it simple
-      scope: $scope,
-      // The animation we want to use for the modal entrance
-      animation: 'slide-in-up'
-  });
-  var service_arr = [];
-  var date_time = {};
-  $ionicLoading.show({template: 'Load My Booking Data...'});
-  $scope.readOnly = true;
-  function formatDate(date) {
-    var dates = new Date();
-    var day = ("0" + dates.getDate()).slice(-2);
-    var month = ("0" + (dates.getMonth() + 1)).slice(-2);
-    var year = dates.getFullYear();
-    // console.log(date);
-    if (date != day+"-"+month+"-"+year) {
-      var d = new Date(date || Date.now()),
-          month = '' + (d.getMonth() + 1),
-          day = '' + d.getDate(),
-          year = d.getFullYear();
-
-      if (month.length < 2) month = '0' + month;
-      if (day.length < 2) day = '0' + day;
-
-      return [year, month, day].join('-');
-    }else{
-      var arrdate = date.split('-');
-      var day = arrdate[0];
-      var month = arrdate[1];
-      var year = arrdate[2];
-      var curdate = year+"-"+month+"-"+day;
-      return curdate;
-    }
-  }
-  $scope.listSalon = [
-      { src: "img/salon1.png", bookStatus:"Done", rating: "4", time: "09:00", date: "2016-07-30", title: "SALON KENCANA", title2: "JL MERDEKA", status: "Need Acceptance", services: ["Fashion Color","Acid Color","Partial Highlight","Bleaching"]},
-      { src: "img/salon2.png", bookStatus:"Done",rating: "3", time: "09:00", date: "2016-07-30", title: "SALON INDAH", title2: "JL MERDEKA", status: "Need Acceptance", services: ["Fashion Color","Acid Color","Partial Highlight"]},
-      { src: "img/salon3.png", bookStatus:"Canceled",rating: "1", time: "09:00", date: "2016-07-30", title: "SALON CANTIK", title2: "JL MERDEKA", status: "Need Acceptance", services: ["Fashion Color","Acid Color","Partial Highlight"]}
-  ];
-  $scope.listSalon2 = [
-      { src: "img/salon1.png", bookStatus:"Done", rating: "4", time: "09:00", date: "2016-07-30", title: "SALON KENCANA", title2: "JL MERDEKA", status: "Need Acceptance", services: ["Fashion Color","Acid Color","Partial Highlight","Bleaching"]},
-      { src: "img/salon2.png", bookStatus:"Done",rating: "3", time: "09:00", date: "2016-07-30", title: "SALON INDAH", title2: "JL MERDEKA", status: "Need Acceptance", services: ["Fashion Color","Acid Color","Partial Highlight"]},
-      { src: "img/salon3.png", bookStatus:"Canceled",rating: "1", time: "09:00", date: "2016-07-30", title: "SALON CANTIK", title2: "JL MERDEKA", status: "Need Acceptance", services: ["Fashion Color","Acid Color","Partial Highlight"]}
-  ];
-  var link = MYconfig.apiURL + 'reserva/booking/mybooking';
-  $http.get(link).success(function(data){
-    $ionicLoading.hide();
-    console.log('success get my booking : ');
-    console.log(data.data);
-    if (data.status != 0) {
-      angular.forEach(data.data, function(value, key){
-        if (value.is_confirm == 0) {
-          $scope.confirm = "Need Acceptance";
-        }else{
-          $scope.confirm = "Confirmed";
-        }
-        service_arr.push({
-              title : value.merchants.name,
-              title2 : value.merchants.address,
-              bookStatus: value.booking_status_id, 
-              rating: Math.round(value.merchants.total_rating), 
-              time: formatDate(value.trxItems[0].time_sch), 
-              date: value.trx_date,
-              src: value.merchants.firstMerchantImages.image_name,
-              status: $scope.confirm,
-              id: value.id,
-              services: value.trxItems
-            });
-      });
-      $scope.bookservice = service_arr;
-      $rootScope.reschedule = service_arr;
-      console.log($scope.bookservice);
-    }
-
-  }).error(function(data){
-    console.log('error get profile');
-    console.log(data);
-  }).then(function(result){
-    things = result.data;
-  });
-  $scope.updateTimeList = function(item) {
-    $window.localStorage.setItem( 'timelist', item.value );
-    console.log( 'Time List: ' + item.value );
-  }
-
-  $scope.reschedule = function(id) {
-    $scope.data = {};
-    $scope.data.grossOptions = 'time';
-    $rootScope.idMybook = id;
-    var service_id = [];
-    var date_time = {};
-    console.log(id);
-    angular.forEach($rootScope.reschedule, function(value, key){
-      console.log(value);
-      if (value.id == id) {
-        $scope.timeList = [
-          { text: "08:00", value: "08:00" },
-          { text: "09:00", value: "09:00" },
-          { text: "10:00", value: "10:00" },
-          { text: "13:00", value: "13:00" },
-          { text: "14:00", value: "14:00" }
-        ];
-        $scope.timeList2 = [
-            { text: "15:00", value: "15:00" },
-            { text: "16:00", value: "16:00" },
-            { text: "17:00", value: "17:00" }
-        ];
-        console.log("sama id");
-        // console.log(value.services);
-        var str = value.services[0].time_sch;
-        var res = str.split(" ");
-        var res_new = res[0];
-        // console.log(res_new);
-        var str2 = res_new;
-        var res2 = str2.split("-");
-        var day = res2[2];
-        var month = res2[1];
-        var year = res2[0];
-        $scope.dateValue = day+"-"+month+"-"+year;
-        $scope.dateValue2 = year+"-"+month+"-"+day;
-        // console.log($scope.dateValue);
-        $scope.modalreschedule.show();
-        angular.forEach(value.services, function(value, key){
-          // console.log(value.time_sch + value.srvItems.name);
-          service_id.push(value.srv_items_id);
-          // date_time[value.srv_items_id] = value.time_sch;
-          date_time[value.srv_items_id] = $scope.dateValue2 +" "+$window.localStorage.getItem('timelist')+":00";
-        });
-      }else{
-        console.log("ga sama id"+value.id);
-      }
-    });
-    $rootScope.resubmit = $httpParamSerializerJQLike({
-            "BookingTransaction":{
-              date_time   : date_time,
-              service_id:service_id
-            }
-          });
-    
-  };
-  $scope.SubmitReschedule = function() {
-    var link = MYconfig.apiURL + 'reserva/booking/resubmit?id='+$rootScope.idMybook;
-    $http({
-    method  : 'POST',
-    url     : link,
-    data    : $rootScope.resubmit, //forms user object
-    headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'} 
-    })
-    .success(function(data) {
-      console.log(data);
-      if (data.status == 0) {
-        $ionicLoading.hide();
-        $ionicPopup.alert({
-             title: '',
-             template: 'Submit Reschedule Failed',
-             okType: 'button-assertive',
-             cssClass: 'popupalert'
-        });
-      }else{
-        $scope.modalreschedule.hide();
-        $ionicLoading.hide();
-        $ionicPopup.alert({
-             title: '',
-             template: 'Submit Reschedule Failed',
-             okType: 'button-assertive',
-             cssClass: 'popupalert'
-        });
-      }
-      $scope.modalreschedule.hide();
-    })
-    .error(function(data, status, headers,config){
-        $scope.modalreschedule.hide();
-        $ionicLoading.hide();
-        $ionicPopup.alert({
-             title: '',
-             template: 'Submit Reschedule Failed',
-             okType: 'button-assertive',
-             cssClass: 'popupalert'
-        });
-    });
-    
-  };
-  $scope.CloseReschedule = function() {
-    $scope.modalreschedule.hide();
-  };
-    }else{
-      console.log("clickmybookelse");
-    }
-    
-  };
-
   $ionicModal.fromTemplateUrl('templates/details_voucher.html', {
     scope: $scope
   }).then(function(modal2) {
@@ -264,6 +145,34 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   // Open the login modal
   $scope.detailVoucher = function() {
     $scope.modalvoucher.show();
+  };
+
+  // Activation register
+  $ionicModal.fromTemplateUrl('templates/activation_register.html', {
+    scope: $scope,
+    backdropClickToClose: false
+  }).then(function(modal) {
+    $scope.modalactivregis = modal;
+  });
+
+
+  // Open the login modal
+  $scope.detailActivregis = function() {
+    $scope.modalactivregis.show();
+  };
+
+  // Forgot Password
+  $ionicModal.fromTemplateUrl('templates/forgot_password.html', {
+    scope: $scope,
+    backdropClickToClose: false
+  }).then(function(modal) {
+    $scope.modalforgotpwd = modal;
+  });
+
+
+  // Open the login modal
+  $scope.forgotPwd = function() {
+    $scope.modalforgotpwd.show();
   };
 
   $scope.detailSalon = function(res){
@@ -365,6 +274,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     $state.go('app.register');
   };
 
+  $scope.forgotpwdPage = function(){
+    $scope.closeLogin();
+    $scope.modalforgotpwd.show();
+  };
+
   $scope.title = function(res){
     console.log(res);
     $rootScope.title = res;
@@ -409,8 +323,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
   $scope.SignupForm = {};
   $scope.submitRegister = function(){
+    $ionicLoading.show({template: 'Sign Up...'});
+    $scope.SignupForm['SignupForm[image]'] = $rootScope.imageReg;
     var link = MYconfig.apiURL + 'signup/';
-
+    console.log($scope.SignupForm['SignupForm[email]']);
+    $window.localStorage.setItem('regisemail', $scope.SignupForm['SignupForm[email]']);
     $http.post(link, $httpParamSerializerJQLike($scope.SignupForm) ).then(function (res){
       if (res.data.detailMessages.username) {
         var pop_up_data = JSON.stringify(res.data.message)+"<br>"+JSON.stringify(res.data.detailMessages.username);
@@ -425,6 +342,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
       }else{
         var pop_up_data = JSON.stringify(res.data.message);
       }
+      $ionicLoading.hide();
       // $ionicPopup.alert({
       //      title: '',
       //      template: pop_up_data
@@ -437,11 +355,14 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
        cssClass: 'popupalert'
       });
       if (res.data.status == 1) {
+        $ionicLoading.hide();
         alertPopup.then(function(res) {
         console.log('masuk if');
-        $scope.login();
+        $scope.modalactivregis.show();
+        // $scope.login();
         });
       }else{
+        $ionicLoading.hide();
         alertPopup.then(function(res) {
         console.log('masuk else');
         });
@@ -724,7 +645,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   
 })
 
-.controller('HomeCtrl', function($log, $scope, $state, $http, MYconfig, $ionicLoading, $ionicPopup, $window) {
+.controller('HomeCtrl', function($log, $scope, $state, $http, MYconfig, $ionicLoading, $ionicPopup, $window, $ionicModal, $ionicHistory, $rootScope) {
   
       var menu_utama_arr = [];
       var menu_utama = "";
@@ -757,6 +678,177 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
         });
     });
     $scope.menu_utama = menu_utama_arr;
+
+    $ionicModal.fromTemplateUrl('templates/filter_home.html', {
+      scope: $scope
+    }).then(function(modal) {
+      $scope.modalfilterhome = modal;
+    });
+
+    $scope.closeFilterhome = function() {
+      $scope.modalfilterhome.hide();
+    };
+
+    $scope.filterHome = function() {
+      $scope.modalfilterhome.show();
+    };
+    $scope.showFilterBar = function () {
+      $scope.modalfilterhome.show();
+    };
+    $scope.filter = {};
+    $scope.choice = {};
+    $scope.clearfilter = function () {
+      $scope.filter =  false;
+      $scope.choice = false;
+      $scope.filter = {};
+      $scope.choice = {};
+    };
+
+    $scope.filterhome = function(event,location){
+      $window.localStorage.setItem('merchantList', '');
+      $rootScope.title = '';
+      console.log(event);
+      console.log($scope.filter);
+      var srvcat = [];
+      angular.forEach($scope.filter, function(value, key){
+        // console.log(key);
+        if (key == 'hair') {  
+          srvcat.push('&srvcat[]=1');
+        }else if (key == 'face') {
+          srvcat.push('&srvcat[]=2');
+        }else if (key == 'makeup') {
+          srvcat.push('&srvcat[]=3');
+        }else if (key == 'brows') {
+          srvcat.push('&srvcat[]=4');
+        }else if (key == 'waxing') {
+          srvcat.push('&srvcat[]=5');
+        }else if (key == 'dental') {
+          srvcat.push('&srvcat[]=6');
+        }else if (key == 'nails') {
+         srvcat.push('&srvcat[]=7');
+        }else if (key == 'massage') {
+          srvcat.push('&srvcat[]=8');
+        }else if (key == 'mens') {
+          srvcat.push('&srvcat[]=9');
+        }
+      }); 
+      console.log(srvcat);
+      var srvcatnew = JSON.stringify(srvcat);
+      var str1 = srvcatnew.replace('","','');
+      var str2 = str1.replace('["','');
+      var str3 = str2.replace('"]','');
+      var str4 = str3.replace('","','');
+      console.log(str4);
+      $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+      $ionicLoading.show({template: 'Load Merchant List...'});
+      if (event == "location") {
+        $ionicLoading.hide();
+        var lat;
+        var lng;
+        var uri = encodeURI(location);
+        var linkLoc = "https://maps.googleapis.com/maps/api/geocode/json?address="+uri+"&key=AIzaSyAyetlWcoLWN69ZE4KuNegiupMm7zAt8Xo";
+        $http.get(linkLoc)
+        .success(function(result){
+          if (result.status != "ZERO_RESULTS") {
+            lat = result.results[0].geometry.location.lat;
+            lng = result.results[0].geometry.location.lng;
+            console.log(lat);
+            console.log(lng);
+            var apiMerchantList = 'reserva/merchants/list?p=1&psize=20'+str4+'&lat='+lat+'&lon='+lng;
+            $http.get(MYconfig.apiURL + apiMerchantList)
+            .success(function(result) {
+              $log.log(MYconfig.apiURL + apiMerchantList);
+              $log.log(result.data);
+              $scope.items = result.data;
+              $ionicLoading.hide();
+              $window.localStorage.setItem('merchantList', JSON.stringify(result.data)); //simpan data ke local storage
+              $ionicHistory.nextViewOptions({
+                disableBack: false
+              });
+              $scope.modalfilterhome.hide();
+              $state.go('app.hair');
+            })
+            .error(function(data, status, headers,config){
+                $scope.modalfilterhome.hide();
+                $ionicLoading.hide();
+                $ionicPopup.alert({
+                     title: '',
+                     template: 'Get Merchant List Failed',
+                     okType: 'button-assertive',
+                     cssClass: 'popupalert'
+                });
+            });
+          }else{
+            $ionicPopup.alert({
+                 title: '',
+                 template: result.status,
+                 okType: 'button-assertive',
+                 cssClass: 'popupalert'
+            });
+          }
+        })
+        .error(function(err){
+          $ionicLoading.hide();
+          console.log(err);
+          $ionicPopup.alert({
+               title: '',
+               template: err,
+               okType: 'button-assertive',
+               cssClass: 'popupalert'
+          });
+        });
+      }else if (event == "bestpromo") {
+        var apiMerchantList = 'reserva/merchants/list?p=1&psize=20'+str4+'&lat='+window.localStorage.getItem('latitude')+'&lon='+window.localStorage.getItem('latitude');
+        $http.get(MYconfig.apiURL + apiMerchantList)
+        .success(function(result) {
+          $log.log(MYconfig.apiURL + apiMerchantList);
+          $log.log(result.data);
+          $scope.items = result.data;
+          $ionicLoading.hide();
+          $window.localStorage.setItem('merchantList', JSON.stringify(result.data)); //simpan data ke local storage
+          $ionicHistory.nextViewOptions({
+            disableBack: false
+          });
+          $scope.modalfilterhome.hide();
+          $state.go('app.hair');
+        })
+        .error(function(data, status, headers,config){
+            $scope.modalfilterhome.hide();
+            $ionicLoading.hide();
+            $ionicPopup.alert({
+                 title: '',
+                 template: 'Get Merchant List Failed',
+                 okType: 'button-assertive',
+                 cssClass: 'popupalert'
+            });
+        });
+      }else if (event == "near") {
+        var apiMerchantList = 'reserva/merchants/list?p=1&psize=20'+str4+'&lat='+window.localStorage.getItem('latitude')+'&lon='+window.localStorage.getItem('latitude');
+        $http.get(MYconfig.apiURL + apiMerchantList)
+        .success(function(result) {
+          $log.log(MYconfig.apiURL + apiMerchantList);
+          $log.log(result.data);
+          $scope.items = result.data;
+          $ionicLoading.hide();
+          $window.localStorage.setItem('merchantList', JSON.stringify(result.data)); //simpan data ke local storage
+          $ionicHistory.nextViewOptions({
+            disableBack: false
+          });
+          $scope.modalfilterhome.hide();
+          $state.go('app.hair');
+        })
+        .error(function(data, status, headers,config){
+            $scope.modalfilterhome.hide();
+            $ionicLoading.hide();
+            $ionicPopup.alert({
+                 title: '',
+                 template: 'Get Merchant List Failed',
+                 okType: 'button-assertive',
+                 cssClass: 'popupalert'
+            });
+        });
+      }
+    }
 })
 
 .controller('PlaylistsCtrl', function($scope) {
@@ -935,8 +1027,17 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
 
 })
 
-.controller('SalonCtrl', function($scope,$window,$rootScope,$ionicLoading) {
+.controller('SalonCtrl', function($http,MYconfig, $scope,$window,$rootScope,$ionicLoading) {
   $ionicLoading.show({template: 'Load Detail Merchant...'});
+  var link = MYconfig.apiURL + 'reserva/merchants/schedulesbymerchant?mid=';
+  // Posting data to php file
+  $http.get(link+$rootScope.idDetailSalon+'&df='+(-1).days().fromNow().toString('yyyy-MM-dd')+'&dt='+(6).days().fromNow().toString('yyyy-MM-dd')).success(function(data){
+      console.log(data.data.schedules);
+      $rootScope.schedules = data.data.schedules;
+    })
+    .error(function(err){
+      console.log(err);
+    })
   $scope.salonData = {};
   // $scope.salonData.imgUrl = "img/salon1.png";
   $scope.rating = {};
@@ -1105,28 +1206,10 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     $scope.number = 0;
     $scope.book = {};
     $scope.bookService = function() {
-    $ionicLoading.show({template: 'Load Service Detail...'});
-    $rootScope.bookservice = $scope.book;
-        // // Posting data to php file
-        // $http({
-        //   method  : 'POST',
-        //   url     : link,
-        //   // data    : $scope.book, //forms user object
-        //   data    : $httpParamSerializerJQLike($scope.book), //forms user object
-        //   headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'} 
-        //  })
-        //   .success(function(data) {
-        //     // if (data.errors) {
-        //     //   // Showing errors.
-        //     //   $scope.errorName = data.errors.name;
-        //     //   $scope.errorUserName = data.errors.username;
-        //     //   $scope.errorEmail = data.errors.email;
-        //     // } else {
-        //     //   $scope.message = data.message;
-        //     // }
-        //   });
+        $ionicLoading.show({template: 'Load Service Detail...'});
+        $rootScope.bookservice = $scope.book;
         $state.go('app.book_datetime');
-        };
+    };
 })
 
 .controller('GalleryCtrl', function($scope,$rootScope,$http, MYconfig, $ionicLoading, $ionicPopup, $window,$log,$ionicHistory) {
@@ -1266,9 +1349,55 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   $scope.rating.rate = 4;
   $scope.rating.max = 5;
 })
-.controller('BookDatetime', function($scope, $stateParams, $rootScope, $window, $ionicLoading, $http, $httpParamSerializerJQLike, $ionicPopup, $state) {
+.controller('BookDatetime', function($rootScope, MYconfig, $scope, $stateParams, $rootScope, $window, $ionicLoading, $http, $httpParamSerializerJQLike, $ionicPopup, $state) {
+  $ionicLoading.show({template: 'Load Booking Detail...'});
   console.log($rootScope.bookservice);
+  
+  $scope.sch0 = false;
+  $scope.sch1 = false;
+  $scope.sch2 = false;
+  $scope.sch3 = false;
+  $scope.sch4 = false;
+  $scope.sch5 = false;
+  $scope.sch6 = false;
+  var n = 1;
+  angular.forEach($rootScope.schedules, function(value, key){
+    // console.log(value);
+    // console.log(key);
+    if (key == 0) {
+      if (value.is_open == 0) {
+        $scope.sch0 = true;
+      }
+    }else if (key == 1) {
+      if (value.is_open == 0) {
+        $scope.sch1 = true;
+      }
+    }else if (key == 2) {
+      if (value.is_open == 0) {
+        $scope.sch2 = true;
+      }
+    }else if (key == 3) {
+      if (value.is_open == 0) {
+        $scope.sch3 = true;
+      }
+    }else if (key == 4) {
+      if (value.is_open == 0) {
+        $scope.sch4 = true;
+      }
+    }else if (key == 5) {
+      if (value.is_open == 0) {
+        $scope.sch5 = true;
+      }
+    }else if (key == 6) {
+      if (value.is_open == 0) {
+        $scope.sch6 = true;
+      }
+    }
+    n++;
+    if (n == 7) {}
+  });
   $window.localStorage.setItem( 'timelist', 0 );
+  $window.localStorage.setItem( 'datelist', 0 );
   $scope.salonData = {};
   $scope.rating = {};
   $scope.salonData.name = $rootScope.salonName;
@@ -1350,7 +1479,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   $ionicLoading.hide();
 
   $scope.data = {};
+  $scope.dates = {};
   $scope.data.grossOptions = 'time';
+  $scope.dates.dateOptions = 'date';
   $scope.timeList = [
       { text: "08:00", value: "08:00" },
       { text: "09:00", value: "09:00" },
@@ -1363,15 +1494,43 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
       { text: "16:00", value: "16:00" },
       { text: "17:00", value: "17:00" }
   ];
+  var dayNames = [
+    "Sun", "Mon", "Tue",
+    "Wed", "Thur", "Fri", "Sat"
+  ];
+  $scope.dateList = [
+      { disable:$scope.sch0, text: (0).days().fromNow().toString('dd'), day: dayNames[date.getDay()], month:(0).days().fromNow().toString('MMMM yyyy'), date:(0).days().fromNow().toString('dd-MM-yyyy')},
+      { disable:$scope.sch1, text: (1).days().fromNow().toString('dd'), day: dayNames[(date.getDay() + 1) % 7], month:(1).days().fromNow().toString('MMMM yyyy'), date:(1).days().fromNow().toString('dd-MM-yyyy')},
+      { disable:$scope.sch2, text: (2).days().fromNow().toString('dd'), day: dayNames[(date.getDay() + 2) % 7], month:(2).days().fromNow().toString('MMMM yyyy'), date:(2).days().fromNow().toString('dd-MM-yyyy')},
+      { disable:$scope.sch3, text: (3).days().fromNow().toString('dd'), day: dayNames[(date.getDay() + 3) % 7], month:(3).days().fromNow().toString('MMMM yyyy'), date:(3).days().fromNow().toString('dd-MM-yyyy')},
+      { disable:$scope.sch4, text: (4).days().fromNow().toString('dd'), day: dayNames[(date.getDay() + 4) % 7], month:(4).days().fromNow().toString('MMMM yyyy'), date:(4).days().fromNow().toString('dd-MM-yyyy')},
+      { disable:$scope.sch5, text: (5).days().fromNow().toString('dd'), day: dayNames[(date.getDay() + 5) % 7], month:(5).days().fromNow().toString('MMMM yyyy'), date:(5).days().fromNow().toString('dd-MM-yyyy')},
+      { disable:$scope.sch6, text: (6).days().fromNow().toString('dd'), day: dayNames[(date.getDay() + 6) % 7], month:(6).days().fromNow().toString('MMMM yyyy'), date:(6).days().fromNow().toString('dd-MM-yyyy')},
+  ];
+  var monthNames = [
+    "January", "February", "March",
+    "April", "May", "June", "July",
+    "August", "September", "October",
+    "November", "December"
+  ];
+  $scope.monthList = monthNames[date.getMonth()] +" "+date.getFullYear();
   $scope.updateTimeList = function(item) {
     $window.localStorage.setItem( 'timelist', item.value );
     console.log( 'Time List: ' + item.value );
-  }
+  };
+  $scope.updateDateList = function(item) {
+    $window.localStorage.setItem( 'datelist', item.date );
+    console.log( 'Date List: ' + item.date );
+    $scope.monthList = item.month;
+    $rootScope.dateListret = item.date;
+  };
 
   $scope.checkout = function() {
-    if ($window.localStorage.getItem('timelist') && $window.localStorage.getItem('timelist') != 0) {
+    // if ($window.localStorage.getItem('timelist') && $window.localStorage.getItem('timelist') != 0) {
+    if ($window.localStorage.getItem('datelist') && $window.localStorage.getItem('timelist') && $window.localStorage.getItem('timelist') != 0 && $window.localStorage.getItem('datelist') != 0) {
       console.log("ada time");
-      $rootScope.date = $scope.book.dateValue;
+      // $rootScope.date = $scope.book.dateValue;
+      $rootScope.date = $scope.dateListret;
       $rootScope.time = $window.localStorage.getItem('timelist');
       $rootScope.promocodes = $scope.book.promoCode;
       console.log($scope.book.promoCode);
@@ -1385,7 +1544,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
       $rootScope.dataConfirm = $httpParamSerializerJQLike({
               "BookingTransaction":{
                 date_time   : date_time,
-                "date"   : formatDate($scope.book.dateValue),
+                // "date"   : formatDate($scope.book.dateValue),
+                "date"   : formatDate($scope.dateListret),
                 "booking_type_id"    : 1,
                 service_id:service_id,
                 quantity:quantity,
@@ -1396,7 +1556,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
       console.log("kosong");
       $ionicPopup.alert({
            title: '',
-           template: 'Please Choose Time',
+           template: 'Please Choose Date and Time',
            okType: 'button-assertive',
            cssClass: 'popupalert'
       });
@@ -1477,7 +1637,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
           });
           $scope.hours = i;
           if(value.price != null){
-            sum += value.price;
+            sum += Math.round(value.price);
           }
           i++;
 
@@ -1486,7 +1646,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     });
   }); 
   $scope.servName = bookServArr;
-  $scope.sumPrice = sum;
+  $rootScope.sumPrice = sum;
   console.log(sum);
   console.log(service_id);
 
@@ -1512,13 +1672,23 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
         .success(function(data) {
           console.log(data);
           if (data.status == 0) {
-            $ionicLoading.hide();
-            $ionicPopup.alert({
-                 title: '',
-                 template: 'Submit Booking Failed',
-                 okType: 'button-assertive',
-                 cssClass: 'popupalert'
-            });
+            if (data.detailMessages.service_id[0]) {
+              $ionicLoading.hide();
+              $ionicPopup.alert({
+                   title: '',
+                   template: data.detailMessages.service_id[0],
+                   okType: 'button-assertive',
+                   cssClass: 'popupalert'
+              });
+            }else{
+              $ionicLoading.hide();
+              $ionicPopup.alert({
+                   title: '',
+                   template: data.message,
+                   okType: 'button-assertive',
+                   cssClass: 'popupalert'
+              });
+              }
           }else{
             $ionicLoading.hide();
             $ionicHistory.nextViewOptions({
@@ -1652,7 +1822,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
 
   $scope.reschedule = function(id) {
     $scope.data = {};
+    $scope.dates = {};
     $scope.data.grossOptions = 'time';
+    $scope.dates.dateOptions = 'date';
     $rootScope.idMybook = id;
     var service_id = [];
     var date_time = {};
@@ -1750,4 +1922,96 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   $scope.CloseReschedule = function() {
     $scope.modalreschedule.hide();
   };
+})
+
+.controller('activationRegister', function($scope, $stateParams, $rootScope, MYconfig, $http, $window, $ionicPopup) {
+  // Triggered in the login modal to close it
+  $scope.closeActivregis = function(reg) {
+    var link = MYconfig.apiURL + 'signup/activate?email='+$window.localStorage.getItem('regisemail')+'&activation_code='+reg.code;
+    $scope.Regis = {};
+    $http.get(link).then(function (res){
+      console.log(res);
+      if (res.data.status == 1) {
+        $ionicPopup.alert({
+             title: '',
+             template: 'Account has active, please login',
+             okType: 'button-assertive',
+             cssClass: 'popupalert'
+        });
+        $scope.modalactivregis.hide();
+        $scope.modal.show();
+      }else{
+        $ionicPopup.alert({
+             title: '',
+             template: 'Wrong Code',
+             okType: 'button-assertive',
+             cssClass: 'popupalert'
+        });
+      }
+    });
+  };
+})
+
+.controller('forgotPassword', function($scope, $stateParams, $rootScope, MYconfig, $http, $window, $ionicPopup, $httpParamSerializerJQLike, $ionicLoading) {
+  // Triggered in the login modal to close it
+  $scope.forgetPwdform = function(reg) {
+    if (typeof reg.email != "undefined") {
+      var link = MYconfig.apiURL + 'signup/reset-password';
+      $ionicLoading.show({template: 'Send data...'});
+      $scope.dataForgetpwd = $httpParamSerializerJQLike({
+                "PasswordResetRequestForm":{
+                  "email"   : reg.email,
+                  "reset_link"   : "http://porto3.nadyne.com/reserva_fweb/site/ResetPassword"
+                }});
+      $http({
+          method  : 'POST',
+          url     : link,
+          data    : $scope.dataForgetpwd, //forms user object
+          headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'} 
+         })
+          .success(function(data) {
+            $ionicLoading.hide();
+            console.log(data);
+            if (data.status == 1) {
+              $scope.modalforgotpwd.hide();
+              $ionicPopup.alert({
+                   title: '',
+                   template: 'Please check your email at '+reg.email+' for your entry new password',
+                   okType: 'button-assertive',
+                   cssClass: 'popupalert'
+              });
+            }else{
+              $scope.modalforgotpwd.hide();
+              $ionicPopup.alert({
+                   title: '',
+                   template: data.detailMessages.email[0],
+                   okType: 'button-assertive',
+                   cssClass: 'popupalert'
+              });
+            }
+          })
+          .error(function(err){
+            $ionicLoading.hide();
+            $scope.modalforgotpwd.hide();
+            console.log(err);
+            $ionicPopup.alert({
+                   title: '',
+                   template: err,
+                   okType: 'button-assertive',
+                   cssClass: 'popupalert'
+              });
+          });
+    }else{
+      $ionicPopup.alert({
+           title: '',
+           template: "Please fill the form",
+           okType: 'button-assertive',
+           cssClass: 'popupalert'
+      });
+    }
+  }
+
+    $scope.cancelforgetPwd = function(){
+      $scope.modalforgotpwd.hide();
+    }
 })

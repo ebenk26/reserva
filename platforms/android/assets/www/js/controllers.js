@@ -147,6 +147,22 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
     $scope.modalvoucher.show();
   };
 
+  $ionicModal.fromTemplateUrl('templates/share_social.html', {
+    scope: $scope
+  }).then(function(modal3) {
+    $scope.modalshare = modal3;
+  });
+
+  // Triggered in the login modal to close it
+  $scope.closeshareSocmed = function() {
+    $scope.modalshare.hide();
+  };
+
+  // Open the login modal
+  $scope.shareSocmed = function() {
+    $scope.modalshare.show();
+  };
+
   // Activation register
   $ionicModal.fromTemplateUrl('templates/activation_register.html', {
     scope: $scope,
@@ -1027,7 +1043,14 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
 
 })
 
-.controller('SalonCtrl', function($http,MYconfig, $scope,$window,$rootScope,$ionicLoading) {
+.controller('SalonCtrl', function($http,MYconfig, $scope,$window,$rootScope,$ionicLoading,$ionicHistory,$state) {
+  $scope.directHome = function () {
+    $ionicHistory.nextViewOptions({
+      disableBack: true
+    });
+    $state.go('app.home');
+  }
+  
   $ionicLoading.show({template: 'Load Detail Merchant...'});
   var link = MYconfig.apiURL + 'reserva/merchants/schedulesbymerchant?mid=';
   // Posting data to php file
@@ -1076,6 +1099,12 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
 })
 
 .controller('ServiceCtrl', function($scope,$rootScope,$http, MYconfig, $ionicLoading, $ionicPopup, $window,$log,$ionicHistory,$httpParamSerializerJQLike,$state) {
+  $scope.directHome = function () {
+    $ionicHistory.nextViewOptions({
+      disableBack: true
+    });
+    $state.go('app.home');
+  }
   $scope.salonData = {};
   // $scope.salonData.imgUrl = "img/salon1.png";
   var service_arr = [];
@@ -1350,6 +1379,12 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   $scope.rating.max = 5;
 })
 .controller('BookDatetime', function($rootScope, MYconfig, $scope, $stateParams, $rootScope, $window, $ionicLoading, $http, $httpParamSerializerJQLike, $ionicPopup, $state) {
+  $scope.directHome = function () {
+    $ionicHistory.nextViewOptions({
+      disableBack: true
+    });
+    $state.go('app.home');
+  }
   $ionicLoading.show({template: 'Load Booking Detail...'});
   console.log($rootScope.bookservice);
   
@@ -1569,6 +1604,12 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'ion-datetime-picke
   // console.log($rootScope.bookservice);
   // console.log($rootScope.promocodes);
   // console.log($rootScope.note);
+  $scope.directHome = function () {
+    $ionicHistory.nextViewOptions({
+      disableBack: true
+    });
+    $state.go('app.home');
+  }
   $scope.book = {};
   $scope.salonData = {};
   $scope.rating = {};

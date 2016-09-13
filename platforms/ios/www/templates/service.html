@@ -15,7 +15,7 @@
     <h1 class="title"><i class="icon ion-scissors"></i>&nbsp;&nbsp;&nbsp;Services</h1>
   </div>
   <div class="content-service">
-    <form name="bookForm" ng-submit="bookService()" overflow-scroll="true" style="overflow-y: scroll;">
+    <form name="bookForm" ng-submit="bookService()" overflow-scroll="true" style="overflow-y: visible;">
     <ul>
       <li ng-repeat="listservice in service" overflow-scroll="true">
         <button type="button" ng-click="showDetails = ! showDetails" class="accordion">{{ listservice.category_name }} <i class="icon ion-chevron-down"></i><i class="icon ion-chevron-right"></i></button>

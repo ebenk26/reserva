@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.ionicframework.reserva504497" version="0.0.10" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.ionicframework.reserva504497" version="0.0.11" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>reserva</name>
     <description>
         An Ionic Framework and Cordova project.
@@ -76,4 +76,6 @@
         <variable name="APP_ID" value="1107147336013228" />
         <variable name="APP_NAME" value="ReservaTesLogin" />
     </plugin>
+    <access origin="tel:*" launch-external="yes" />
+    <access origin="mailto:*" launch-external="yes" />
 </widget>

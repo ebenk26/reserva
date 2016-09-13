@@ -1,0 +1,65 @@
+<ion-view view-title="">
+<ion-content class="has-header">
+  <div class="row salon-detail" >
+    <div class="bg-blur" style="background-image:url({{salonData.imgUrl}})"></div>
+    <div class="col col-33 col-offset-33">
+      <div class="item-avatar">
+        <img ng-src="{{salonData.imgUrl}}">
+      </div>
+      <rating ng-model="rating.rate" max="rating.max" readonly="readOnly"></rating>
+      <h4>{{salonData.name}}</h4>
+      <p>{{salonData.address}}</p>
+    </div>
+  </div>
+  <div class="my-bar-title bar bar-header bar-assertive">
+    <h1 class="title"><i class="icon ion-pricetag"></i>&nbsp;&nbsp;&nbsp;Rate Me</h1>
+  </div>
+    <div class="list card">
+        <div style="text-align: center;">Rate Me
+        <div class="ionic_ratings">
+          <rating ng-model="data.rating" max="data.max" ></rating>
+        </div>
+        </div>
+      <div class="item whitespace-normal" ng-show="showQuest">
+        <div style="text-align: center;">What we can improve on ?</div>
+        <div class="button-bar padding row" style="overflow: auto">
+          <ion-radio ng-repeat="quest in questlist"
+                 ng-value="quest.value"
+                 ng-model="data.grossOptions"
+                 ng-change="updateQuestList(quest)"
+                 class="button button-positive button-outline button-radio-quest"
+                 name="radio1">
+            {{ quest.text }}
+          </ion-radio>
+        </div>
+        <div class="button-bar padding row" style="overflow: auto">
+          <ion-radio ng-repeat="quest in questlist2"
+                 ng-value="quest.value"
+                 ng-model="data.grossOptions"
+                 ng-change="updateQuestList(quest)"
+                 class="button button-positive button-outline button-radio-quest"
+                 name="radio1">
+            {{ quest.text }}
+          </ion-radio>
+        </div>
+        <div class="button-bar padding row" style="overflow: auto">
+          <ion-radio ng-repeat="quest in questlist3"
+                 ng-value="quest.value"
+                 ng-model="data.grossOptions"
+                 ng-change="updateQuestList(quest)"
+                 class="button button-positive button-outline button-radio-quest"
+                 name="radio1">
+            {{ quest.text }}
+          </ion-radio>
+        </div>
+      </div>
+      <div class="item whitespace-normal">
+        <textarea style="width: 100%;height: 200px;" placeholder="Write Review"></textarea>
+      </div>
+    </div>
+    <button type="submit" class="btn-blue-navi button button-full">
+        Submit
+    </button>
+</ion-content>
+</ion-view>
+

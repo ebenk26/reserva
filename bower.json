@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "moment": "^2.13.0",
-    "ion-datetime-picker": "^0.3.0"
+    "ion-datetime-picker": "^0.3.0",
+    "ionic-ratings": "^0.3.0"
   }
 }

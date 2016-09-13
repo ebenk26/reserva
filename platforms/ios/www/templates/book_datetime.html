@@ -20,14 +20,30 @@
 			<div class="item item-detail-serv">Summary Hours : {{hours}}</div>
 		</ion-list>
 		<form name="bookForm" ng-submit="checkout()">
-		<div class="item item-icon-left border-none" ion-datetime-picker date only-valid="{'after': 'today', 'inclusive': true}" ng-model="book.dateValue">
-            <!-- <i class="icon ion-calendar"></i>
-            Choose Date and Time :&nbsp; -->
-            <!-- <input ion-datetime-picker date only-valid="{'after': 'today', 'inclusive': true}" ng-model="book.dateValue" value="{{book.dateValue | date: 'dd-MM-yyyy'}}" style="width: 100px;"> -->
+		<!-- <div class="item item-icon-left border-none" ion-datetime-picker date only-valid="{'after': 'today', 'inclusive': true}" ng-model="book.dateValue">
                 <i class="icon ion-calendar"></i>
                 Choose Date and Time :&nbsp; 
                 <strong>{{book.dateValue| date: "dd-MM-yyyy"}}</strong>
-        </div>
+        </div> -->
+        <div>
+		<div style="" class="button-bar padding row">
+			<div class="button-bar padding row button bar-content-title">
+				<div class="item-icon-left"><i class="icon ion-calendar"></i></div>
+				<div style="float: right">{{monthList}}</div>
+			</div>
+		</div>
+         <div class="button-bar padding row" style="overflow: auto;padding-top: 0px;margin-top: -10px;">
+			<ion-radio ng-repeat="dates in dateList"
+			       ng-value="dates.text"
+			       ng-model="dates.dateOptions"
+			       ng-change="updateDateList(dates)"
+			       class="button button-positive button-outline button-radio-time dates.disable"
+			       ng-disabled="dates.disable" 
+			       name="radio2">
+				{{ dates.text }}<br>{{dates.day}}
+			</ion-radio>
+		</div>
+		</div>
 		<div class="button-bar padding row" style="overflow: auto">
 			<ion-radio ng-repeat="time in timeList"
 			       ng-value="time.value"
@@ -48,6 +64,7 @@
 				{{ time.text }}
 			</ion-radio>
 		</div>
+		<div class="padding row"><span style="background-color: #dddddd;width: 20px;margin-right: 5px;opacity:.4;color: #444"></span>Unavailable</div>
 		<ion-list style="line-height: 31px;">
 			<div class="item bar-content-title"><div style="float: left">Promotion Code</div><input type="text" style="float: right;text-align: center;" ng-model="book.promoCode"></div>
 		</ion-list>

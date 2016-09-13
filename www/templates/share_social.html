@@ -1,0 +1,27 @@
+<ion-modal-view class="">
+  <div class="ion-modal-content-custom">
+    <ion-content class="padding" ng-controller="socialshareCtrl">
+      <div style="color: white; font-size: 15px;text-align: center;">
+      <button class="button icon-left ion-social-facebook button-block button-positive" ng-click="socialshareFb()">
+        Facebook
+      </button>
+      <button class="button icon-left ion-social-twitter button-block button-calm" ng-click="socialshareTwitter()">
+        Twitter
+      </button>
+      <button class="button icon-left ion-social-whatsapp button-block button-balanced" ng-click="socialshareWa()">
+        WhatsApp
+      </button>
+      <button class="button icon-left ion-at button-block button-energized" ng-click="socialshareEmail()">
+        Email
+      </button>
+      <button class="button icon-left ion-ios-email button-block button-royal" ng-click="socialshareMessage()">
+        Message
+      </button>
+      </div>
+        
+    </ion-content>
+    <ion-footer-bar align-title="center" class="bar-assertive" ng-click="closeshareSocmed()">
+  <h1 class="title">Close</h1>
+</ion-footer-bar>
+  </div>
+</ion-modal-view>

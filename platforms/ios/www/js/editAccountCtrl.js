@@ -1,14 +1,30 @@
 var app = angular.module('editAccount.controllers', ['ionic', 'ngCordova', 'jrCrop', 'ngTagsInput', 'ion-datetime-picker']);
 
 app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state', '$cordovaCapture', '$cordovaImagePicker', '$ionicActionSheet', '$ionicPlatform', '$ionicLoading',
-					'Photo', '$jrCrop', 'MYconfig', '$http', '$httpParamSerializerJQLike','$ionicPopup', '$window', '$filter',
-	function ($scope, $rootScope, $timeout, $state, $cordovaCapture, $cordovaImagePicker, $ionicActionSheet, $ionicPlatform, $ionicLoading, Photo, $jrCrop, MYconfig, $http, $httpParamSerializerJQLike, $ionicPopup, $window, $filter) {
+				'$jrCrop', 'MYconfig', '$http', '$httpParamSerializerJQLike','$ionicPopup', '$window', '$filter',
+	function ($scope, $rootScope, $timeout, $state, $cordovaCapture, $cordovaImagePicker, $ionicActionSheet, $ionicPlatform, $ionicLoading, $jrCrop, MYconfig, $http, $httpParamSerializerJQLike, $ionicPopup, $window, $filter) {
 
 	$scope.isLoggedIn = function() {
       return helperService.cekLogin();
    };
-
+   $ionicLoading.show({template: 'Load Data Account'});
 	var link = MYconfig.apiURL + 'services/profiles';
+
+	function convertImageToBase64(url, callback, output) {
+	    var img = new Image();
+		img.crossOrigin = 'Anonymous';
+		img.onload = function(){
+		    var canvas = document.createElement('CANVAS'),
+		        c = canvas.getContext('2d'), urlData;
+				canvas.height = this.height;
+				canvas.width = this.width;
+				c.drawImage(this, 0, 0);
+				urlData = canvas.toDataURL(output);
+				callback(urlData);
+				canvas = null;
+		};
+		img.src = url;
+	}
 
 	$http.get(link).success(function(data){
 
@@ -72,14 +88,16 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 
 			if (arr_data[1].image_name != '') {
 				console.log('base64 ImagePicker : ');
-				Photo.convertImageToBase64(arr_data[1].image_name, function(base64Img){
+				convertImageToBase64(arr_data[1].image_name, function(base64Img){
                console.log('--');
-               //console.log(base64Img);
-               $scope.imageAddPhoto = base64Img;
+               // console.log(base64Img);
+               $scope.imageAddPhoto = arr_data[1].image_name;
+               $ionicLoading.hide();
             });
 			}
 			else{
 				$scope.imageAddPhoto = 'img/add_photos.png';
+				$ionicLoading.hide();
 			}
 		}
 
@@ -125,8 +143,8 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 
             var hideSheet = $ionicActionSheet.show({
 					buttons: [
-					  { text: '<b>Capture</b>' },
-					  { text: '<b>Pick</b>' }
+						{ text: '<b>Capture</b>' },
+					  	{ text: '<b>Pick</b>' }
 					],
 					title: 'Add Photo',
 					cancelText: 'Cancel',
@@ -135,19 +153,44 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 					},
                buttonClicked: function (index) {
                   if (index == 0) {
+                  	console.log("masuk if capture");
                      var options = {
                          limit: 1
                      };
 
                      // capture
                      $cordovaCapture.captureImage(options).then(function (imageData) {
+                     			console.log("capture");
 								var imgDataRaw = imageData[0].fullPath;
+
+								// window.imageResizer.getImageSize(function(data){
+								// 	console.log(data);
+								// }, function(error){
+								// 	console.log(error);
+								// }, imageData[0].fullPath);
 
 								window.imageResizer.getImageSize(function(data){
 									console.log(data);
+									if (data.width > 520) {
+										console.log('--> image di resize');
+										window.imageResizer.resizeImage(function(result){
+											console.log(result);
+										}, function(error){
+											console.log(error);
+										}, imageData[0].fullPath, 200, 0, {
+											resizeType : ImageResizer.RESIZE_TYPE_PIXEL,
+											imageDataType : ImageResizer.IMAGE_DATA_TYPE_URL,
+											pixelDensity: true
+										});
+									}
+									else{
+										console.log('--> image tidak resize');
+									}
 								}, function(error){
 									console.log(error);
 								}, imageData[0].fullPath);
+
+								var imgDataRaw = imageData[0].fullPath;
 
 								$jrCrop.crop({
 								   url: imgDataRaw,
@@ -173,12 +216,17 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 								$scope.photoError = error;
 							});
                   } else if (index == 1) {
+                  	console.log("masuk else pick");
                      var options = {
                         maximumImagesCount: 1,
+                        width: 200,
+					   height: 200,
+					   quality: 40
                      };
 
                      // pick
                      $cordovaImagePicker.getPictures(options).then(function (results) {
+                     	console.log("pick");
                         window.imageResizer.getImageSize(function(imageSize){
 									console.log(imageSize);
 									if (imageSize.width > 520) {
@@ -187,9 +235,13 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 											console.log(result);
 										}, function(error){
 											console.log(error);
-										}, results[0], 300, 0, {
+										}, results[0], 200, 0, {
 											resizeType : ImageResizer.RESIZE_TYPE_PIXEL,
-											imageDataType : ImageResizer.IMAGE_DATA_TYPE_URL
+											imageDataType : ImageResizer.IMAGE_DATA_TYPE_URL,
+											pixelDensity: true,
+									        storeImage: false,
+									        photoAlbum: false,
+									        format: 'jpg'
 										});
 									}
 									else{
@@ -199,12 +251,12 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 									console.log(error);
 								}, results[0]);
 
-							window.imageResizer.getImageSize(function(imageSize){
-									console.log('setelah di resize');
-									console.log(imageSize);
-								}, function(error){
-									console.log(error);
-								}, results[0]);
+							// window.imageResizer.getImageSize(function(imageSize){
+							// 		console.log('setelah di resize');
+							// 		console.log(imageSize);
+							// 	}, function(error){
+							// 		console.log(error);
+							// 	}, results[0]);
 
 								var imgDataRaw = results[0];
 
@@ -217,8 +269,8 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 
 								   var imageCrop = canvas.toDataURL();
 								   //console.log('result crop : ');
-								   //console.log(imageCrop);12
-
+								   console.log(imgDataRaw);
+								   console.log('image jrcrop')
 								   $scope.imageAddPhoto = imageCrop;
 									$scope.fooImageHidden = imageCrop;
 									$rootScope.newValfooImageHidden = imageCrop;
@@ -244,36 +296,16 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 			var linkUpdate = MYconfig.apiURL + 'services/profiles/update';
 			//$scope.imageAddPhoto
 			//var imageCrop = $window.sessionStorage.getItem('imageCrop');
-			var imageCrop = $scope.imageAddPhoto;
-
-			//console.log($scope.ProfilesMdl.interests);
-			var tag_interest = '';
-			angular.forEach($scope.ProfilesMdl.interests, function(value, key) {
-			  tag_interest = tag_interest.concat(value.text) + ',';
-			}, tag_interest);
-			//console.log('tag interest : ');
-			tag_interest = tag_interest.replace(/,\s*$/, "");
-			//console.log(tag_interest);
-
-			//console.log($scope.ProfilesMdl.hobbies);
-			var tag_hobbies = '';
-			angular.forEach($scope.ProfilesMdl.hobbies, function(value, key) {
-			  tag_hobbies = tag_hobbies.concat(value.text) + ',';
-			}, tag_hobbies);
-			console.log('tag hobbies : ');
-			tag_hobbies = tag_hobbies.replace(/,\s*$/, "");
-			console.log(tag_hobbies);
-
 			var imageKirim;
 			var imageCrop = $rootScope.newValfooImageHidden;
 
 			if (typeof imageCrop !== 'undefined') {
 					var imageCropArray = [];
-
+					console.log(imageCrop);
 					imageCropArray = imageCrop.split(",");
 					imageKirim = imageCropArray[1];
 					console.log('image crop array : ');
-					//console.log(imageCropArray[1]);
+					console.log(imageCropArray[1]);
 			}
 			else {
 				imageKirim =  $scope.image;
@@ -281,18 +313,20 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 
 			$http.post(linkUpdate, $httpParamSerializerJQLike({
 						"ProfilesMdl":{
-							"interests"		: tag_interest,
+							"interests"		: "",
 							"gender" 		: $scope.ProfilesMdl.gender,
-							"hobbies" 		: tag_hobbies,
+							"hobbies" 		: "",
 							"email"			: $scope.ProfilesMdl.email,
 							"image" 			: imageKirim,
 							"lat" 			: $scope.lat,
 							"lon" 			: $scope.long,
 							"birth_date" 	: formatDate($scope.ProfilesMdl.birth_date),
 							"full_name" 	: $scope.ProfilesMdl.full_name,
-							"bio" 			: $scope.ProfilesMdl.bio
+							"bio" 			: ""
 						}
-					}) ).then(function (response){
+					}), { timeout : 30000 }
+			
+			).then(function (response){
 
 						console.log('response update : ');
 						console.log(response);
@@ -318,24 +352,32 @@ app.controller('editAccountCtrl', ['$scope', '$rootScope', '$timeout', '$state',
 							 template: 'Update Failed'
 					});
 				}
-			});
+			}, function(error) {
+				$ionicLoading.hide();
+				$ionicPopup.alert({
+						 title: '',
+						 template: 'Timeout, Photo size too big. Please pick another file.',
+						 okType: 'button-assertive',
+        				cssClass: 'popupalert'
+				});
+		    });
 		};//end scope.submitAccount
 
-		var link = MYconfig.apiURL + 'services/profiles';
-		console.log('link :');
-		console.log(link);
-		$http.get(link).success(function(data){
-			console.log('success get profile : ');
-			console.log(data); // for browser console
-			$scope.result = data; // for UI
+		// var link = MYconfig.apiURL + 'services/profiles';
+		// console.log('link :');
+		// console.log(link);
+		// $http.get(link).success(function(data){
+		// 	console.log('success get profile : ');
+		// 	console.log(data); // for browser console
+		// 	$scope.result = data; // for UI
 
-			$scope.imageAddPhoto = data.image_name;
-		}).error(function(data){
-			console.log('error get profile');
-			console.log(data);
-		}).then(function(result){
-			things = result.data;
-		});
+		// 	$scope.imageAddPhoto = data.image_name;
+		// }).error(function(data){
+		// 	console.log('error get profile');
+		// 	console.log(data);
+		// }).then(function(result){
+		// 	things = result.data;
+		// });
 
    });//end platform ready
 }]);//end controller editAccountCtrl

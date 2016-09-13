@@ -25,13 +25,13 @@
     </ion-header-bar>
     <ion-content>
       <ion-list>
-        <ion-item menu-close class="item-avatar" ng-click="login()" ng-show="isLoggedIn()">
+        <ion-item menu-close class="item-avatar" ng-show="isLoggedIn()">
           <img ng-src="{{profilePic}}"> <h4>{{fullName}}</h4>
         </ion-item>
         <ion-item menu-close ng-href="#/app/home">
           Home
         </ion-item>
-         <ion-item menu-close ng-href="#/app/edit_account">
+         <ion-item menu-close ng-href="#/app/edit_account" ng-show="isLoggedIn()">
           Edit Account
         </ion-item>
         <ion-item menu-close ng-href="#/app/mybooking" ng-show="isLoggedIn()">

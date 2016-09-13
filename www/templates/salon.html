@@ -1,4 +1,8 @@
 <ion-view view-title="">
+  <ion-nav-buttons side="right">
+    <button side="right" class="button button-icon button-clear ion-home" 
+    ng-click="directHome()"></button>
+  </ion-nav-buttons>
 <ion-content class="has-header">
   <div class="row salon-detail" >
     <div class="bg-blur" style="background-image:url({{salonData.imgUrl}})"></div>
@@ -11,9 +15,12 @@
       <p>{{salonData.address}}</p>
     </div>
   </div>
+  <div ng-click="showDetails = ! showDetails" class="icon-fav">
+    <i style="text-shadow: white 0px 0px 40px;" ng-class="{'icon icon ion-ios-heart': showDetails, 'ion-ios-heart-outline': !showDetails}"></i>
+  </div>
   <div class="button-bar menu-salon">
     <a class="button">About Us</a>
-    <a class="button">Favourites</a>
+    <!-- <a class="button">Favourites</a> -->
   </div>
   <ul class="list menu-list-salon">
       <li class="item">

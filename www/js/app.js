@@ -275,6 +275,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic.rating', 'jett
         }
       }
   })
+  .state('app.rate_salon', {
+      cache: false,
+      url: '/rate_salon',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/rate_salon.html',
+          controller: 'ratesalonCtrl'
+        }
+      }
+  })
   .state('app.favourite', {
     url: '/favourite',
     views: {

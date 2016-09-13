@@ -49,7 +49,7 @@
 	<ion-tab title="Past Appointment" on-select="vm.ratingTab()">
 	 <div class="list salon-list top93">
 		<div ng-repeat="item in listSalon2">
-			<a class="item padding0">
+			<a class="item padding0" ng-click="clickRate(item.rating,item.id)">
 			  
 			  <div class="row">
 			    <div class="col col-33">
